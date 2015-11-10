@@ -4,7 +4,7 @@ The digital portfolio of Christopher Wright.
 
 ####Install dependencies
 
-- `curl -sL https://deb.nodesource.com/setup | sudo bash -`
+- `sudo curl -sL https://deb.nodesource.com/setup | sudo bash -`
 
 - `sudo apt-get install nodejs`
 
@@ -14,7 +14,7 @@ The digital portfolio of Christopher Wright.
 
 - `git clone https://github.com/cwright814/Portfolio`
 
-- `cd portfolio`
+- `cd Portfolio`
 
 ####Install needed UI library dependencies
 
