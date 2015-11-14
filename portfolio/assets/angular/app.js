@@ -3,6 +3,11 @@
     'use strict';
 
     angular
+        .module('portfolio', [
+            'ui.router','ui.bootstrap', 'angular-confirm'
+        ]);
+
+    angular
         .module('portfolio')
         .controller('portfolioController', portfolioController);
 
@@ -16,5 +21,5 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
-    }]);
+    }
 })();
