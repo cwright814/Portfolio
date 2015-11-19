@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en" id="ng-app" ng-app="portfolio">
     <head>
         <meta charset="utf-8">
         <meta name="description" content="Digital Portfolio">
         <meta name="viewport" content="width=device-width">
         <title>Christopher Wright</title>
-        <link href="assets/img/favicon.ico" rel="icon" type="image/x-icon">
+        <!--link href="assets/img/favicon.ico" rel="icon" type="image/x-icon"-->
 
         <link href="assets/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="assets/css/common.css" rel="stylesheet">
-        <link href="assets/css/index.css" rel="stylesheet">
     <head>
 
     <body>
-        <div id="filler"></div>
-        <h2>Under construction.</h2>
+        <div id="header" ui-view="header"></div>
+        <div id="content" ui-view="content"></div>
+        <div id="footer" ui-view="footer"></div>
 
         <!-- Placed at the end of the document so the page load faster -->
         <script src="assets/lib/angular/angular.min.js"></script>
-        <script src="assets/angular/app.js"></script>
+        <script src="assets/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
         <script src="assets/lib/angular-sanitize/angular-sanitize.min.js"></script>
+        <script src="assets/angular/app.js"></script>
         <script src="assets/lib/jquery/dist/jquery.min.js"></script>
         <script src="assets/lib/bpopup/jquery.bpopup.min.js"></script>
         <script src="assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -29,6 +30,5 @@
         <script src="assets/lib/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js"></script>
         <script src="assets/lib/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js"></script>
         <script src="assets/js/common.js"></script>
-        <script src="assets/js/index.js"></script>
     </body>
 </html>
