@@ -2,4 +2,20 @@
     display: none !important;
 }
 
-/* CSS goes here */
+body {
+    background-color: rgb(29, 29, 26);
+    color: rgb(222, 218, 208);
+}
+
+.small {
+    font-size: 50%;
+}
+
+.large {
+    font-size: 150%;
+}
+
+#content {
+    background-color: rgb(43, 44, 38);
+    color: rgb(247, 247, 241);
+}
