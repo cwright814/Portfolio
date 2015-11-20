@@ -5,11 +5,30 @@ header {
 }
 
 #glow {
+    width: 100%;
     height: 300px;
     margin-top: 150px;
     background: radial-gradient(ellipse at center, rgb(56, 76, 102) 0%, rgb(29, 29, 26) 67%);
         /* rgb(52, 142, 253) */
     z-index: 0;
+}
+
+#particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+#particle {
+    display: none;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    z-index: 1;
+    background: radial-gradient(circle 8px, rgba(56, 76, 102, 0.75) 0%, rgba(56, 76, 102, 0) 100%);
 }
 
 #titleOuter {
@@ -19,7 +38,7 @@ header {
     left: 0;
     width: 100%;
     height: 300px;
-    z-index: 1;
+    z-index: 2;
 }
 
 #titleInner {

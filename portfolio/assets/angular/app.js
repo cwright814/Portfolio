@@ -16,6 +16,10 @@
         '$stateProvider', '$urlRouterProvider'
     ];
 
+    ctrlHeader.$inject = [
+        '$timeout'
+    ];
+
     ctrlHome.$inject = [
         '$scope', '$http', '$filter', '$timeout'
     ];
@@ -46,8 +50,22 @@
             });
     }
 
-    function ctrlHeader() {
+    function ctrlHeader($timeout) {
+        var timeout = $timeout;
         var ctrl = this;
+
+        var particles = $('#particles');
+        var particle = $('#particle');
+
+        for (var i = 0; i < 20; i++)
+        {
+            var temp = particle.clone();
+            temp.css('left', -5 + Math.random()*105 + '%');
+            temp.css('top', -5 + Math.random()*105 + '%');
+            particles.append(temp);
+        }
+        particle.remove();
+        particles.children().css('display', 'inline');
     }
 
     function ctrlHome($scope, $http, $filter, $timeout) {
