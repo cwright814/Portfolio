@@ -82,7 +82,7 @@
                 o = 0.65;
             }
             else {
-                z = 5;
+                z = 5; // Skips 4 for exaggerated movement
                 r = 160;
                 o = 1;
             }
@@ -93,6 +93,7 @@
                 rotation: 0.0003
             });
             temp.css('z-index', z);
+            temp.css('opacity', o);
             temp.css('width', r*2);
             temp.css('height', r*2);
             temp.css('background', 'radial-gradient(' +
@@ -101,7 +102,6 @@
                     'rgba(56, 76, 102, 0) 100%' +
                 ')'
             );
-            temp.css('opacity', o);
 
             domParticles.append(temp);
             particles.push(temp);
@@ -113,7 +113,6 @@
         domParticle.remove();
 
         // Begin particle animation
-        // $.each(particles, function(i, particle) {
         for (var i = 0; i < particles.length; i++) {
             var particle = particles[i];
             var x = particleVars[i][0];
@@ -131,7 +130,7 @@
                 delay: delay,
                 ease: Power1.easeInOut,
                 onComplete: updateParticle,
-                onCompleteParams: [particle, x, y, z, 0]
+                onCompleteParams: [particle, x, y, z, Math.random()*0.15]
             });
         }
     }
