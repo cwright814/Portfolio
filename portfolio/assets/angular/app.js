@@ -63,48 +63,47 @@
 
         // Create particles
         for (var i = 0; i < 41; i++) {
-            var temp = domParticle.clone();
-            var x = Math.random();
-            var y = Math.random();
-            var z, r, o;
+            var temp     = new Object();
+                temp.dom = domParticle.clone();
+                temp.x   = Math.random();
+                temp.y   = Math.random();
+                temp.z   = null;
+                temp.r   = null; // Radius
+            var o; // Opacity
 
             if (i < 25) {
-                z = 1;
-                r = 8;
-                o = 0.2;
+                temp.z = 1;
+                temp.r = 8;
+                o      = 0.2;
             }
             else if (i >= 25 && i < 35) {
-                z = 2;
-                r = 24;
-                o = 0.4;
+                temp.z = 2;
+                temp.r = 24;
+                o      = 0.4;
             }
             else if (i >= 35 && i < 40) {
-                z = 3;
-                r = 64;
-                o = 0.65;
+                temp.z = 3;
+                temp.r = 64;
+                o      = 0.65;
             }
             else {
-                z = 5; // Skips 4 for exaggerated movement
-                r = 160;
-                o = 1;
+                temp.z = 5; // Skips 4 for exaggerated movement
+                temp.r = 160;
+                o      = 1;
             }
 
-            temp.css('z-index', z);
-            temp.css('opacity', o);
-            temp.css('width', r*2);
-            temp.css('height', r*2);
-            temp.css('background', 'radial-gradient(' +
-                     'circle ' + r + 'px,' +
+            temp.dom.css('z-index', temp.z);
+            temp.dom.css('opacity', o);
+            temp.dom.css('width', temp.r*2);
+            temp.dom.css('height', temp.r*2);
+            temp.dom.css('background', 'radial-gradient(' +
+                     'circle ' + temp.r + 'px,' +
                      'rgba(56, 76, 102, 0.75) 0%,' +
                      'rgba(56, 76, 102, 0) 100%)'
             );
 
-            domParticles.append(temp);
+            domParticles.append(temp.dom);
             particles.push(temp);
-            particleVars.push([]);
-            particleVars[i].push(x);
-            particleVars[i].push(y);
-            particleVars[i].push(z);
         }
 
         domParticle.remove(); // Remove template particle
@@ -115,42 +114,37 @@
             if (typeof debug !== 'undefined' && debug)
                 return;
 
-            for (var i = 0; i < particles.length; i++) {
-                var particle = particles[i];
-                var x = particleVars[i][0];
-                var y = particleVars[i][1];
-                var z = particleVars[i][2];
-
-                // Snap particle to its {x, y}
-                // Rotation is applied to force sub-pixel animation
-                TweenMax.to(particle, 0, {
-                    x: x * domParticles.width(),
-                    y: y * (300 - z*30),
+            $.each(particles, function(i, particle) {
+                /* Initialize particle to its {x, y}
+                 * Rotation is applied to force sub-pixel animation */
+                TweenMax.to(particle.dom, 0, {
+                    x: particle.x * domParticles.width(),
+                    y: particle.y * (300 - particle.r),
                     rotation: 0.0003
                 });
 
-                updateParticle(particle, x, y, z, Math.random()*2.5);
+                updateParticle(particle, Math.random()*2.5);
 
                 if (particlesHidden)
-                    particle.css('display', 'inline');
-            }
+                    particle.dom.css('display', 'inline');
+            });
 
             if (particlesHidden)
                 particlesHidden = false;
         }
 
         // Update particle animation
-        function updateParticle(particle, x, y, z, delay) {
+        function updateParticle(particle, delay) {
             if (typeof delay === 'undefined')
-                delay = 0;
+                delay = Math.random()*0.15;
 
-            TweenMax.to(particle, 2.5, {
-                x: (x + z * (-0.015 + Math.random()*0.03)) * domParticles.width(),
-                y: (y + z * (-0.015 + Math.random()*0.03)) * (300 - z*30),
+            TweenMax.to(particle.dom, 2.5, {
+                x: (particle.x + particle.z * (-0.015 + Math.random()*0.03)) * domParticles.width(),
+                y: (particle.y + particle.z * (-0.015 + Math.random()*0.03)) * (300 - particle.r),
                 delay: delay,
                 ease: Power1.easeInOut,
                 onComplete: updateParticle,
-                onCompleteParams: [particle, x, y, z, Math.random()*0.15]
+                onCompleteParams: [particle]
             });
         }
     }
