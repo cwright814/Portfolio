@@ -62,7 +62,7 @@
         var particlesHidden = true;
 
         // Create particles
-        for (var i = 0; i < 41; i++) {
+        for (var i = 1; i <= 64; i++) {
             var temp     = new Object();
                 temp.dom = domParticle.clone();
                 temp.x   = Math.random();
@@ -71,17 +71,17 @@
                 temp.r   = null; // Radius
             var o; // Opacity
 
-            if (i < 25) {
+            if (i <= 38) {
                 temp.z = 1;
                 temp.r = 8;
                 o      = 0.2;
             }
-            else if (i >= 25 && i < 35) {
+            else if (i > 38 && i <= 54) {
                 temp.z = 2;
                 temp.r = 24;
                 o      = 0.4;
             }
-            else if (i >= 35 && i < 40) {
+            else if (i > 54 && i <= 62) {
                 temp.z = 3;
                 temp.r = 64;
                 o      = 0.65;
@@ -96,6 +96,8 @@
             temp.dom.css('opacity', o);
             temp.dom.css('width', temp.r*2);
             temp.dom.css('height', temp.r*2);
+            temp.dom.css('left', -temp.r);
+            temp.dom.css('top', -temp.r);
             temp.dom.css('background', 'radial-gradient(' +
                      'circle ' + temp.r + 'px,' +
                      'rgba(56, 76, 102, 0.75) 0%,' +
@@ -119,7 +121,7 @@
                  * Rotation is applied to force sub-pixel animation */
                 TweenMax.to(particle.dom, 0, {
                     x: particle.x * domParticles.width(),
-                    y: particle.y * (300 - particle.r),
+                    y: particle.y * 300,
                     rotation: 0.0003
                 });
 
@@ -138,9 +140,11 @@
             if (typeof delay === 'undefined')
                 delay = Math.random()*0.15;
 
+            var yRange = domParticles.width() / 30000;
+
             TweenMax.to(particle.dom, 2.5, {
-                x: (particle.x + particle.z * (-0.015 + Math.random()*0.03)) * domParticles.width(),
-                y: (particle.y + particle.z * (-0.015 + Math.random()*0.03)) * (300 - particle.r),
+                x: (particle.x + particle.z * (-0.01 + Math.random()*0.02)) * domParticles.width(),
+                y: (particle.y + particle.z * (-yRange + Math.random()*yRange*2)) * 300,
                 delay: delay,
                 ease: Power1.easeInOut,
                 onComplete: updateParticle,
