@@ -1,24 +1,28 @@
 #header {
     width: 100%;
     height: 300px;
-    overflow: hidden;
+
+    overflow-y: hidden;
 }
 
 #glow {
     width: 100%;
     height: 300px;
     margin-top: 150px;
+    z-index: 0;
+
     background: radial-gradient(ellipse at center, rgb(56, 76, 102) 0%, rgb(29, 29, 26) 67%);
         /* rgb(52, 142, 253) */
-    z-index: 0;
 }
 
 #particles {
     position: absolute;
+
     left: 0;
     top: 0;
     width: 100%;
     height: 300px;
+
     overflow: hidden;
 }
 
@@ -30,6 +34,7 @@
 #titleOuter {
     display: table;
     position: absolute;
+
     left: 0;
     top: 0;
     width: 100%;
@@ -40,10 +45,10 @@
 #titleInner {
     display: table-cell;
     vertical-align: middle;
+
     text-align: center;
     font-size: 2em;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-    z-index: 6;
 }
 
 @media (max-width: 479px), handheld and (orientation: portrait) {

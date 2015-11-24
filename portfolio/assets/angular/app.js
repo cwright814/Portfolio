@@ -120,7 +120,7 @@
                 /* Initialize particle to its {x, y}
                  * Rotation is applied to force sub-pixel animation */
                 TweenMax.to(particle.dom, 0, {
-                    x: particle.x * domParticles.width(),
+                    x: particle.x * window.innerWidth,
                     y: particle.y * 300,
                     rotation: 0.0003
                 });
@@ -140,10 +140,10 @@
             if (typeof delay === 'undefined')
                 delay = Math.random()*0.15;
 
-            var yRange = domParticles.width() / 30000;
+            var yRange = window.innerWidth / 30000;
 
             TweenMax.to(particle.dom, 2.5, {
-                x: (particle.x + particle.z * (-0.01 + Math.random()*0.02)) * domParticles.width(),
+                x: (particle.x + particle.z * (-0.01 + Math.random()*0.02)) * window.innerWidth,
                 y: (particle.y + particle.z * (-yRange + Math.random()*yRange*2)) * 300,
                 delay: delay,
                 ease: Power1.easeInOut,
@@ -159,6 +159,36 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
+        var debug = true;
+
+        var domSkillsets = $('#skillsets');
+        var domSsLanguages = $('#skillsetLanguages');
+
+        if (typeof debug !== 'undefined' && debug)
+        {
+            $('#skillsTip').css('display', 'none');
+            $('#mySkills').css('box-shadow', '0 0 transparent');
+            //$('#mySkills > .inner').css('display', 'none');
+            //$('#skillsets > div > .inner').css('display', 'none');
+        }
+
+        // Wait for first draw else we will lose a potential scrollbar offset
+        window.requestAnimationFrame(function() {
+            TweenMax.to(domSsLanguages, 1, {
+                left: domSkillsets.innerWidth()*0.65 - window.innerWidth*0.05 - 40,
+                ease: Sine.easeOut
+            });
+            TweenMax.to(domSsLanguages, 1, {
+                top: domSkillsets.innerHeight()*0.25 - window.innerWidth*0.05 - 40,
+                ease: Sine.easeIn,
+                onComplete: setSkillsetCss
+            });
+        });
+
+        function setSkillsetCss() {
+            domSsLanguages.css('left', 'calc(65% - 5vw - 40px)')
+            domSsLanguages.css('top', 'calc(25% - 5vw - 40px)')
+        }
     }
 
     function ctrlFooter() {
