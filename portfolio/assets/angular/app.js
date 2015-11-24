@@ -53,7 +53,7 @@
     function ctrlHeader($timeout) {
         var timeout = $timeout;
         var ctrl = this;
-        //var debug = true;
+        var debug = true;
 
         var domParticles = $('#particles');
         var domParticle = $('#particle');

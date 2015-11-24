@@ -15,6 +15,15 @@ body {
     font-size: 150%;
 }
 
+div.outer {
+    display: table;
+}
+
+div.outer > div.inner {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 #content {
     background-color: rgb(43, 44, 38);
     color: rgb(247, 247, 241);
