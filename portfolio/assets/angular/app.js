@@ -160,10 +160,11 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
-        var debug = true;
+        //var debug = true;
 
         var domSkillsets = $('#skillsets');
         var domSkillsetsChildren = $('#skillsets > div');
+        var skillsetRadius = $('#mySkills').width() / 2;
 
         var tween = {
             center: {
@@ -171,19 +172,24 @@
                 y: null
             },
             step: {
-                radius: 20,
-                delta: null
+                offset: null,
+                delta: null,
+                scale: null
             },
-            range: {
-                radius: 200,
-                delta: 180
+            shift: {
+                offset: 172,
+                delta: 180,
+                scale: -0.2
             },
+            steps: 10,
             duration: 0.3,
             rate: null
         };
 
-        tween.step.delta = tween.range.delta / (tween.range.radius / tween.step.radius);
-        tween.rate = tween.duration / (tween.range.radius / tween.step.radius);
+        tween.step.offset = tween.shift.offset / tween.steps;
+        tween.step.delta = tween.shift.delta / tween.steps;
+        tween.step.scale = tween.shift.scale / tween.steps;
+        tween.rate = tween.duration / tween.steps;
         tween.duration -= 0.0167 * tween.duration;
 
         if (typeof debug !== 'undefined' && debug)
@@ -196,8 +202,8 @@
 
         // Wait for first draw else we will lose a potential scrollbar offset
         window.requestAnimationFrame(function() {
-            tween.center.x = domSkillsets.innerWidth()*0.5 - window.innerWidth*0.05 - 40;
-            tween.center.y = domSkillsets.innerHeight()*0.5 - window.innerWidth*0.05 - 40;
+            tween.center.x = domSkillsets.innerWidth()*0.5 - skillsetRadius;
+            tween.center.y = domSkillsets.innerHeight()*0.5 - skillsetRadius;
 
             // Create skillset objects
             domSkillsetsChildren.each(function(i) {
@@ -206,18 +212,19 @@
                 skillset = {
                     dom: skillset,
                     pos: {
-                        x: tween.center.x,
-                        y: tween.center.y
+                        x: null,
+                        y: null
                     },
-                    radius: 0,
+                    offset: 0,
                     delta: i * (360 / domSkillsetsChildren.length) - 90,
                     deltaEnd: null,
+                    scale: 1.0,
                     progress: 0,
                     step: stepSkillset,
                     finish: setSkillsetCss
                 };
 
-                skillset.deltaEnd = skillset.delta + tween.range.delta;
+                skillset.deltaEnd = skillset.delta + tween.shift.delta;
                 skillset.step();
             });
         });
@@ -242,14 +249,16 @@
 
             // Step and prep
             obj.progress += tween.rate;
-            obj.radius += tween.step.radius;
+            obj.offset += tween.step.offset;
             obj.delta += tween.step.delta;
-            obj.pos.x = tween.center.x + obj.radius * Math.cos(obj.delta.toRad());
-            obj.pos.y = tween.center.y - obj.radius * Math.sin(obj.delta.toRad());
+            obj.scale += tween.step.scale;
+            obj.pos.x = tween.center.x + obj.offset * Math.cos(obj.delta.toRad());
+            obj.pos.y = tween.center.y - obj.offset * Math.sin(obj.delta.toRad());
 
             TweenMax.to(obj.dom, tween.rate, {
                 left: obj.pos.x,
                 top: obj.pos.y,
+                scale: obj.scale,
                 ease: Power0.easeInOut,
                 onComplete: stepSkillset,
                 onCompleteParams: [obj]
@@ -259,12 +268,14 @@
         // Revert to calc to ensure that changes to the window are updated properly
         function setSkillsetCss() {
             var offset = {
-                x: Math.round(tween.range.radius * Math.cos(this.deltaEnd.toRad()) - 40),
-                y: Math.round(tween.range.radius * Math.sin(this.deltaEnd.toRad()) + 40)
+                x: Math.round(tween.shift.offset * Math.cos(this.deltaEnd.toRad()) - skillsetRadius),
+                y: Math.round(tween.shift.offset * Math.sin(this.deltaEnd.toRad()) + skillsetRadius),
+                s: 'matrix(' + this.scale + ', 0, 0, ' + this.scale + ', 0, 0)'
             };
 
-            $(this.dom).css('left', 'calc(50% - 5vw + ' + offset.x + 'px)');
-            $(this.dom).css('top', 'calc(50% - 5vw - ' + offset.y + 'px)');
+            $(this.dom).css('left', 'calc(50% + ' + offset.x + 'px)');
+            $(this.dom).css('top', 'calc(50% - ' + offset.y + 'px)');
+            $(this.dom).css('transform', offset.s);
         }
     }
 
