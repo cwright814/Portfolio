@@ -164,7 +164,6 @@
 
         var domSkillsets = $('#skillsets');
         var domSkillsetsChildren = $('#skillsets > div');
-        var skillsets = [];
 
         var tween = {
             center: {
@@ -172,19 +171,20 @@
                 y: null
             },
             step: {
-                radius: 10,
+                radius: 20,
                 delta: null
             },
             range: {
                 radius: 200,
                 delta: 180
             },
-            duration: 0.25,
+            duration: 0.3,
             rate: null
         };
 
         tween.step.delta = tween.range.delta / (tween.range.radius / tween.step.radius);
         tween.rate = tween.duration / (tween.range.radius / tween.step.radius);
+        tween.duration -= 0.0167 * tween.duration;
 
         if (typeof debug !== 'undefined' && debug)
         {
@@ -210,12 +210,14 @@
                         y: tween.center.y
                     },
                     radius: 0,
-                    delta: i * (360 / domSkillsetsChildren.length),
+                    delta: i * (360 / domSkillsetsChildren.length) - 90,
+                    deltaEnd: null,
                     progress: 0,
                     step: stepSkillset,
                     finish: setSkillsetCss
                 };
 
+                skillset.deltaEnd = skillset.delta + tween.range.delta;
                 skillset.step();
             });
         });
@@ -257,12 +259,12 @@
         // Revert to calc to ensure that changes to the window are updated properly
         function setSkillsetCss() {
             var offset = {
-                x: Math.round(this.radius * Math.cos(this.delta.toRad()) - 40),
-                y: Math.round(this.radius * Math.sin(this.delta.toRad()) - 40)
+                x: Math.round(tween.range.radius * Math.cos(this.deltaEnd.toRad()) - 40),
+                y: Math.round(tween.range.radius * Math.sin(this.deltaEnd.toRad()) + 40)
             };
 
             $(this.dom).css('left', 'calc(50% - 5vw + ' + offset.x + 'px)');
-            $(this.dom).css('top', 'calc(50% - 5vw + ' + offset.y + 'px)');
+            $(this.dom).css('top', 'calc(50% - 5vw - ' + offset.y + 'px)');
         }
     }
 
