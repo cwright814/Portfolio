@@ -63,12 +63,13 @@
 
         // Create particles
         for (var i = 1; i <= 64; i++) {
-            var temp     = new Object();
-                temp.dom = domParticle.clone();
-                temp.x   = Math.random();
-                temp.y   = Math.random();
-                temp.z   = null;
-                temp.r   = null; // Radius
+            var temp = {
+                dom: domParticle.clone(),
+                x: Math.random(),
+                y: Math.random(),
+                z: null,
+                r: null // Radius
+            };
             var o; // Opacity
 
             if (i <= 38) {
@@ -162,32 +163,106 @@
         var debug = true;
 
         var domSkillsets = $('#skillsets');
-        var domSsLanguages = $('#skillsetLanguages');
+        var domSkillsetsChildren = $('#skillsets > div');
+        var skillsets = [];
+
+        var tween = {
+            center: {
+                x: null,
+                y: null
+            },
+            step: {
+                radius: 10,
+                delta: null
+            },
+            range: {
+                radius: 200,
+                delta: 180
+            },
+            duration: 0.25,
+            rate: null
+        };
+
+        tween.step.delta = tween.range.delta / (tween.range.radius / tween.step.radius);
+        tween.rate = tween.duration / (tween.range.radius / tween.step.radius);
 
         if (typeof debug !== 'undefined' && debug)
         {
             $('#skillsTip').css('display', 'none');
             $('#mySkills').css('box-shadow', '0 0 transparent');
-            //$('#mySkills > .inner').css('display', 'none');
-            //$('#skillsets > div > .inner').css('display', 'none');
+            $('#mySkills > .inner').css('display', 'none');
+            $('#skillsets > div > .inner').css('display', 'none');
         }
 
         // Wait for first draw else we will lose a potential scrollbar offset
         window.requestAnimationFrame(function() {
-            TweenMax.to(domSsLanguages, 1, {
-                left: domSkillsets.innerWidth()*0.65 - window.innerWidth*0.05 - 40,
-                ease: Sine.easeOut
-            });
-            TweenMax.to(domSsLanguages, 1, {
-                top: domSkillsets.innerHeight()*0.25 - window.innerWidth*0.05 - 40,
-                ease: Sine.easeIn,
-                onComplete: setSkillsetCss
+            tween.center.x = domSkillsets.innerWidth()*0.5 - window.innerWidth*0.05 - 40;
+            tween.center.y = domSkillsets.innerHeight()*0.5 - window.innerWidth*0.05 - 40;
+
+            // Create skillset objects
+            domSkillsetsChildren.each(function(i) {
+                var skillset = this;
+
+                skillset = {
+                    dom: skillset,
+                    pos: {
+                        x: tween.center.x,
+                        y: tween.center.y
+                    },
+                    radius: 0,
+                    delta: i * (360 / domSkillsetsChildren.length),
+                    progress: 0,
+                    step: stepSkillset,
+                    finish: setSkillsetCss
+                };
+
+                skillset.step();
             });
         });
 
+        function stepSkillset(obj) {
+            /* 'this' won't work when called from TweenMax,
+             * so we can take a param just in case */
+            if (typeof obj !== 'object')
+            {
+                if (typeof this === 'object')
+                    obj = this;
+                else
+                    return;
+            }
+
+            // Kill the animation when complete
+            if (obj.progress >= tween.duration)
+            {
+                obj.finish();
+                return;
+            }
+
+            // Step and prep
+            obj.progress += tween.rate;
+            obj.radius += tween.step.radius;
+            obj.delta += tween.step.delta;
+            obj.pos.x = tween.center.x + obj.radius * Math.cos(obj.delta.toRad());
+            obj.pos.y = tween.center.y - obj.radius * Math.sin(obj.delta.toRad());
+
+            TweenMax.to(obj.dom, tween.rate, {
+                left: obj.pos.x,
+                top: obj.pos.y,
+                ease: Power0.easeInOut,
+                onComplete: stepSkillset,
+                onCompleteParams: [obj]
+            });
+        }
+
+        // Revert to calc to ensure that changes to the window are updated properly
         function setSkillsetCss() {
-            domSsLanguages.css('left', 'calc(65% - 5vw - 40px)')
-            domSsLanguages.css('top', 'calc(25% - 5vw - 40px)')
+            var offset = {
+                x: Math.round(this.radius * Math.cos(this.delta.toRad()) - 40),
+                y: Math.round(this.radius * Math.sin(this.delta.toRad()) - 40)
+            };
+
+            $(this.dom).css('left', 'calc(50% - 5vw + ' + offset.x + 'px)');
+            $(this.dom).css('top', 'calc(50% - 5vw + ' + offset.y + 'px)');
         }
     }
 

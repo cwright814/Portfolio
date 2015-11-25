@@ -23,6 +23,20 @@ function getScrollbarWidth() {
     return widthNoScroll - widthWithScroll;
 }
 
+/** Converts numeric radians to degrees */
+if (typeof(Number.prototype.toDeg) === "undefined") {
+    Number.prototype.toDeg = function() {
+        return this * 180 / Math.PI;
+    }
+}
+
+/** Converts numeric degrees to radians */
+if (typeof(Number.prototype.toRad) === "undefined") {
+    Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+    }
+}
+
 // On-load logic
 $(document).ready(function () {
     
