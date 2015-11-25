@@ -1,3 +1,4 @@
+/** Returns width of scrollbar if present */
 function getScrollbarWidth() {
     var outer = document.createElement("div");
     outer.style.visibility = "hidden";
@@ -34,6 +35,14 @@ if (typeof(Number.prototype.toDeg) === "undefined") {
 if (typeof(Number.prototype.toRad) === "undefined") {
     Number.prototype.toRad = function() {
         return this * Math.PI / 180;
+    }
+}
+
+/** Converts CSS rgb() to object */
+if (typeof(String.prototype.toRGB) === "undefined") {
+    String.prototype.toRGB = function() {
+        var rgb = this.match(/\d+/g);
+        return {r: +rgb[0], g: +rgb[1], b: +rgb[2]};
     }
 }
 

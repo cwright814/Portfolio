@@ -160,10 +160,10 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
-        //var debug = true;
+        var debug = true;
 
         var domSkillsets = $('#skillsets');
-        var domSkillsetsChildren = $('#skillsets > div');
+        var domSkillsetsChildren = $('#skillsets').children();
         var skillsetRadius = $('#mySkills').width() / 2;
 
         var tween = {
@@ -177,11 +177,11 @@
                 scale: null
             },
             shift: {
-                offset: 172,
+                offset: 148,
                 delta: 180,
                 scale: -0.2
             },
-            steps: 10,
+            steps: 7,
             duration: 0.3,
             rate: null
         };
@@ -195,9 +195,10 @@
         if (typeof debug !== 'undefined' && debug)
         {
             $('#skillsTip').css('display', 'none');
-            $('#mySkills').css('box-shadow', '0 0 transparent');
+            /*$('#mySkills').css('box-shadow', '0 0 transparent');
+            $(domSkillsetsChildren).css('box-shadow', '0 0 transparent');
             $('#mySkills > .inner').css('display', 'none');
-            $('#skillsets > div > .inner').css('display', 'none');
+            $('#skillsets > div > .inner').css('display', 'none');*/
         }
 
         // Wait for first draw else we will lose a potential scrollbar offset
@@ -208,6 +209,8 @@
             // Create skillset objects
             domSkillsetsChildren.each(function(i) {
                 var skillset = this;
+                var skillsetColor = $(this).css('background-color').toRGB();
+                var skillsetColorTarget = $(skillset).attr('data-color').toRGB();
 
                 skillset = {
                     dom: skillset,
@@ -219,15 +222,43 @@
                     delta: i * (360 / domSkillsetsChildren.length) - 90,
                     deltaEnd: null,
                     scale: 1.0,
+                    color: {
+                        target: {
+                            r: skillsetColorTarget.r,
+                            g: skillsetColorTarget.g,
+                            b: skillsetColorTarget.b,
+                            css: getSkillsetColor
+                        },
+                        css: getSkillsetColor
+                    },
+                    text: $(skillset).children('.inner:first-child'),
                     progress: 0,
+                    init: initSkillset,
                     step: stepSkillset,
                     finish: setSkillsetCss
                 };
 
+                $(skillset.dom).css('transform', 'scale(' + skillset.scale + ')');
                 skillset.deltaEnd = skillset.delta + tween.shift.delta;
-                skillset.step();
+                skillset.init();
             });
         });
+
+        function initSkillset() {
+            $(this.text).css('opacity', 0);
+
+            TweenMax.to(this.dom, tween.duration, {
+                backgroundColor: this.color.target.css(),
+                ease: Power3.easeIn
+            });
+
+            TweenMax.to(this.text, tween.duration, {
+                opacity: 1,
+                ease: Expo.easeIn
+            });
+
+            this.step();
+        }
 
         function stepSkillset(obj) {
             /* 'this' won't work when called from TweenMax,
@@ -276,6 +307,10 @@
             $(this.dom).css('left', 'calc(50% + ' + offset.x + 'px)');
             $(this.dom).css('top', 'calc(50% - ' + offset.y + 'px)');
             $(this.dom).css('transform', offset.s);
+        }
+
+        function getSkillsetColor() {
+            return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
         }
     }
 
