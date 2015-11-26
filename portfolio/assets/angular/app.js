@@ -24,6 +24,8 @@
         '$scope', '$http', '$filter', '$timeout'
     ];
 
+    var smCtrl = new ScrollMagic.Controller();
+
     function cfgPortfolio($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/');
 
@@ -60,6 +62,48 @@
         var particles = [];
         var particleVars = [];
         var particlesHidden = true;
+
+        // ScrollMagic scenes
+        var smScenes = [
+            // Header tweens
+            new ScrollMagic.Scene({
+                    reverse: false
+                })
+                .setTween(
+                    new TimelineMax()
+                    .from(domParticles, 1.5, {
+                        autoAlpha: 0,
+                        ease: Sine.easeOut
+                    })
+                    .from($('#shiftLeft'), 1.5, {
+                        marginLeft: -120,
+                        autoAlpha: 0,
+                        ease: Circ.easeOut
+                    }, "-=1")
+                    .from($('#shiftRight'), 1.5, {
+                        marginRight: -120,
+                        autoAlpha: 0,
+                        ease: Circ.easeOut
+                    }, "-=1.5")
+                )
+                .addIndicators({name: "h0. base"})
+                .addTo(smCtrl),
+            // Particles pause/resume (for efficiency when off-screen)
+            new ScrollMagic.Scene({
+                    triggerElement: '#header',
+                    triggerHook: 'onLeave',
+                    duration: 300
+                })
+                .on("enter", function(e) {
+                    if (e.target.controller().info("scrollDirection") == "REVERSE")
+                        playParticles();
+                })
+                .on("leave", function(e) {
+                    TweenMax.killTweensOf($(domParticles).children());
+                })
+                .addIndicators({name: "h1. pause"})
+                .addTo(smCtrl)
+        ];
 
         // Create particles
         for (var i = 1; i <= 64; i++) {
@@ -120,7 +164,7 @@
             $.each(particles, function(i, particle) {
                 /* Initialize particle to its {x, y}
                  * Rotation is applied to force sub-pixel animation */
-                TweenMax.to(particle.dom, 0, {
+                TweenMax.set(particle.dom, {
                     x: particle.x * window.innerWidth,
                     y: particle.y * 300,
                     rotation: 0.0003
@@ -160,12 +204,13 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
-        var debug = true;
 
+        var domMySkills = $('#mySkills');
         var domSkillsets = $('#skillsets');
         var domSkillsetsChildren = $('#skillsets').children();
         var skillsetRadius = $('#mySkills').width() / 2;
 
+        // Config for skillsets tween
         var tween = {
             center: {
                 x: null,
@@ -181,8 +226,8 @@
                 delta: 180,
                 scale: -0.2
             },
-            steps: 7,
-            duration: 0.3,
+            steps: 12,
+            duration: 0.5,
             rate: null
         };
 
@@ -192,25 +237,88 @@
         tween.rate = tween.duration / tween.steps;
         tween.duration -= 0.0167 * tween.duration;
 
-        if (typeof debug !== 'undefined' && debug)
-        {
-            $('#skillsTip').css('display', 'none');
-            /*$('#mySkills').css('box-shadow', '0 0 transparent');
-            $(domSkillsetsChildren).css('box-shadow', '0 0 transparent');
-            $('#mySkills > .inner').css('display', 'none');
-            $('#skillsets > div > .inner').css('display', 'none');*/
-        }
+        // ScrollMagic scenes
+        var smScenes = [
+            /* Initial #skills tweens
+             * .on() is used here for a safe reference in onComplete: */
+            new ScrollMagic.Scene({
+                    triggerElement: '#skills',
+                    reverse: false
+                })
+                .setTween(
+                    TweenMax.from(domMySkills, 0.5, {
+                        autoAlpha: 0,
+                        scale: 0.5,
+                        ease: Power1.easeOut
+                }))
+                .on("enter", function(e) {
+                    TweenMax.set(domSkillsets, {
+                        autoAlpha: 1,
+                        delay: 0.5,
+                        onComplete: smScenes[1].enabled,
+                        onCompleteParams: [true]
+                    });
+                })
+                .addIndicators({name: "c0. #mySkills"})
+                .addTo(smCtrl)
+                .enabled(false),
+            // Skillsets tweens
+            new ScrollMagic.Scene({
+                    triggerElement: '#skills',
+                    triggerHook: 'onEnter',
+                    offset: 540,
+                    reverse: false
+                })
+                .setTween(
+                    TweenMax.from($('#skillsTip'), 1.5, {
+                        x: -40,
+                        autoAlpha: 0,
+                        ease: Sine.easeOut,
+                        delay: 0.75
+                }))
+                .on("enter", function(e) {
+                    var tl = new TimelineMax()
+                    .set(domMySkills, {
+                        boxShadow: '0 0 0 ' + $(domMySkills).css('background-color')
+                    })
+                    .to(domMySkills, tween.duration, {
+                        boxShadow: '0 0 16px rgb(43, 44, 38)',
+                        ease: Expo.easeIn
+                    });
 
-        // Wait for first draw else we will lose a potential scrollbar offset
-        window.requestAnimationFrame(function() {
+                    initSkillsets();
+                })
+                .addIndicators({name: "c1. #skillsets"})
+                .addTo(smCtrl)
+                .enabled(false)
+        ];
+
+        // Late start of scene.c0 (will be instant when triggered after delay)
+        setTimeout(function(){smScenes[0].enabled(true)}, 2000);
+
+        $(domSkillsetsChildren).hover(function() {
+            // Enter
+            TweenMax.to(this, 0.5, {
+                scale: (1 + tween.shift.scale) * 1.25,
+                boxShadow: 'inset 0 0 16px rgb(222, 218, 208)',
+                zIndex: 2,
+                ease: Power4.easeOut
+            });
+        }, function() {
+            // Leave
+            TweenMax.to(this, 0.5, {
+                scale: 1 + tween.shift.scale,
+                boxShadow: 'inset 0 0 0px ' + $(this).css('background-color'),
+                zIndex: 0
+            });
+        });
+
+        function initSkillsets() {
             tween.center.x = domSkillsets.innerWidth()*0.5 - skillsetRadius;
             tween.center.y = domSkillsets.innerHeight()*0.5 - skillsetRadius;
 
-            // Create skillset objects
             domSkillsetsChildren.each(function(i) {
                 var skillset = this;
-                var skillsetColor = $(this).css('background-color').toRGB();
-                var skillsetColorTarget = $(skillset).attr('data-color').toRGB();
 
                 skillset = {
                     dom: skillset,
@@ -222,15 +330,7 @@
                     delta: i * (360 / domSkillsetsChildren.length) - 90,
                     deltaEnd: null,
                     scale: 1.0,
-                    color: {
-                        target: {
-                            r: skillsetColorTarget.r,
-                            g: skillsetColorTarget.g,
-                            b: skillsetColorTarget.b,
-                            css: getSkillsetColor
-                        },
-                        css: getSkillsetColor
-                    },
+                    color: $(skillset).attr('data-color'),
                     text: $(skillset).children('.inner:first-child'),
                     progress: 0,
                     init: initSkillset,
@@ -238,22 +338,22 @@
                     finish: setSkillsetCss
                 };
 
-                $(skillset.dom).css('transform', 'scale(' + skillset.scale + ')');
-                skillset.deltaEnd = skillset.delta + tween.shift.delta;
                 skillset.init();
             });
-        });
+        }
 
         function initSkillset() {
+            $(this.dom).css('transform', 'scale(' + this.scale + ')');
             $(this.text).css('opacity', 0);
+            this.deltaEnd = this.delta + tween.shift.delta;
 
             TweenMax.to(this.dom, tween.duration, {
-                backgroundColor: this.color.target.css(),
+                backgroundColor: this.color,
                 ease: Power3.easeIn
             });
 
             TweenMax.to(this.text, tween.duration, {
-                opacity: 1,
+                autoAlpha: 1,
                 ease: Expo.easeIn
             });
 
@@ -290,7 +390,7 @@
                 left: obj.pos.x,
                 top: obj.pos.y,
                 scale: obj.scale,
-                ease: Power0.easeInOut,
+                ease: Power0.easeNone,
                 onComplete: stepSkillset,
                 onCompleteParams: [obj]
             });
@@ -307,10 +407,6 @@
             $(this.dom).css('left', 'calc(50% + ' + offset.x + 'px)');
             $(this.dom).css('top', 'calc(50% - ' + offset.y + 'px)');
             $(this.dom).css('transform', offset.s);
-        }
-
-        function getSkillsetColor() {
-            return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
         }
     }
 
