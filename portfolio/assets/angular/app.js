@@ -55,7 +55,7 @@
     function ctrlHeader($timeout) {
         var timeout = $timeout;
         var ctrl = this;
-        var debug = true;
+        //var debug = true;
 
         var domParticles = $('#particles');
         var domParticle = $('#particle');
@@ -71,18 +71,18 @@
                 })
                 .setTween(
                     new TimelineMax()
-                    .from(domParticles, 1.5, {
-                        autoAlpha: 0,
+                    .from(domParticles, 1.5, {css:{
+                        autoAlpha: 0},
                         ease: Sine.easeOut
                     })
-                    .from($('#shiftLeft'), 1.5, {
+                    .from($('#shiftLeft'), 1.5, {css:{
                         marginLeft: -120,
-                        autoAlpha: 0,
+                        autoAlpha: 0},
                         ease: Circ.easeOut
                     }, "-=1")
-                    .from($('#shiftRight'), 1.5, {
+                    .from($('#shiftRight'), 1.5, {css:{
                         marginRight: -120,
-                        autoAlpha: 0,
+                        autoAlpha: 0},
                         ease: Circ.easeOut
                     }, "-=1.5")
                 )
@@ -164,10 +164,10 @@
             $.each(particles, function(i, particle) {
                 /* Initialize particle to its {x, y}
                  * Rotation is applied to force sub-pixel animation */
-                TweenMax.set(particle.dom, {
+                TweenMax.set(particle.dom, {css:{
                     x: particle.x * window.innerWidth,
                     y: particle.y * 300,
-                    rotation: 0.0003
+                    rotation: 0.0003}
                 });
 
                 updateParticle(particle, Math.random()*2.5);
@@ -187,9 +187,9 @@
 
             var yRange = window.innerWidth / 30000;
 
-            TweenMax.to(particle.dom, 2.5, {
+            TweenMax.to(particle.dom, 2.5, {css:{
                 x: (particle.x + particle.z * (-0.01 + Math.random()*0.02)) * window.innerWidth,
-                y: (particle.y + particle.z * (-yRange + Math.random()*yRange*2)) * 300,
+                y: (particle.y + particle.z * (-yRange + Math.random()*yRange*2)) * 300},
                 delay: delay,
                 ease: Power1.easeInOut,
                 onComplete: updateParticle,
@@ -204,6 +204,7 @@
         var filter = $filter;
         var timeout = $timeout;
         var ctrl = this;
+        var debug = true;
 
         var domMySkills = $('#mySkills');
         var domSkillsets = $('#skillsets');
@@ -218,8 +219,7 @@
             },
             step: {
                 offset: null,
-                delta: null,
-                scale: null
+                delta: null
             },
             shift: {
                 offset: 148,
@@ -231,10 +231,17 @@
             rate: null
         };
 
+        // Extends the animation duration for easier tweaking
+        /*if (typeof debug !== 'undefined' && debug) {
+            tween.steps *= 3;
+            tween.duration *= 3;
+        }*/
+
         tween.step.offset = tween.shift.offset / tween.steps;
         tween.step.delta = tween.shift.delta / tween.steps;
-        tween.step.scale = tween.shift.scale / tween.steps;
         tween.rate = tween.duration / tween.steps;
+
+        // .duration is decreased by 1/60 per second to avoid over-tweening.
         tween.duration -= 0.0167 * tween.duration;
 
         // ScrollMagic scenes
@@ -246,14 +253,14 @@
                     reverse: false
                 })
                 .setTween(
-                    TweenMax.from(domMySkills, 0.5, {
+                    TweenMax.from(domMySkills, 0.5, {css:{
                         autoAlpha: 0,
-                        scale: 0.5,
+                        scale: 0.5},
                         ease: Power1.easeOut
                 }))
                 .on("enter", function(e) {
-                    TweenMax.set(domSkillsets, {
-                        autoAlpha: 1,
+                    TweenMax.set(domSkillsets, {css:{
+                        autoAlpha: 1},
                         delay: 0.5,
                         onComplete: smScenes[1].enabled,
                         onCompleteParams: [true]
@@ -270,19 +277,19 @@
                     reverse: false
                 })
                 .setTween(
-                    TweenMax.from($('#skillsTip'), 1.5, {
+                    TweenMax.from($('#skillsTip'), 1.5, {css:{
                         x: -40,
-                        autoAlpha: 0,
+                        autoAlpha: 0},
                         ease: Sine.easeOut,
                         delay: 0.75
                 }))
                 .on("enter", function(e) {
                     var tl = new TimelineMax()
-                    .set(domMySkills, {
+                    .set(domMySkills, {css:{
                         boxShadow: '0 0 0 ' + $(domMySkills).css('background-color')
-                    })
-                    .to(domMySkills, tween.duration, {
-                        boxShadow: '0 0 16px rgb(43, 44, 38)',
+                    }})
+                    .to(domMySkills, tween.duration, {css:{
+                        boxShadow: '0 0 16px rgb(43, 44, 38)'},
                         ease: Expo.easeIn
                     });
 
@@ -293,30 +300,34 @@
                 .enabled(false)
         ];
 
-        // Late start of scene.c0 (will be instant when triggered after delay)
-        setTimeout(function(){smScenes[0].enabled(true)}, 2000);
+        if (typeof debug !== 'undefined' && debug)
+            smScenes[0].enabled(true);
+        else
+            // Late start of scene.c0 (will be instant when triggered after delay)
+            setTimeout(function(){smScenes[0].enabled(true)}, 2000);
 
         $(domSkillsetsChildren).hover(function() {
             // Enter
-            TweenMax.to(this, 0.5, {
+            TweenMax.to(this, 0.5, {css:{
                 scale: (1 + tween.shift.scale) * 1.25,
                 boxShadow: 'inset 0 0 16px rgb(222, 218, 208)',
-                zIndex: 2,
+                zIndex: 2},
                 ease: Power4.easeOut
             });
         }, function() {
             // Leave
-            TweenMax.to(this, 0.5, {
+            TweenMax.to(this, 0.5, {css:{
                 scale: 1 + tween.shift.scale,
                 boxShadow: 'inset 0 0 0px ' + $(this).css('background-color'),
                 zIndex: 0
-            });
+            }});
         });
 
         function initSkillsets() {
             tween.center.x = domSkillsets.innerWidth()*0.5 - skillsetRadius;
             tween.center.y = domSkillsets.innerHeight()*0.5 - skillsetRadius;
 
+            // Tweak delta and scale as necessary
             domSkillsetsChildren.each(function(i) {
                 var skillset = this;
 
@@ -343,17 +354,19 @@
         }
 
         function initSkillset() {
-            $(this.dom).css('transform', 'scale(' + this.scale + ')');
-            $(this.text).css('opacity', 0);
             this.deltaEnd = this.delta + tween.shift.delta;
 
-            TweenMax.to(this.dom, tween.duration, {
-                backgroundColor: this.color,
+            TweenMax.set(this.dom, {css:{scale: this.scale}});
+            TweenMax.set(this.text, {css:{autoAlpha: 0}});
+
+            TweenMax.to(this.dom, tween.duration, {css:{
+                scale: this.scale + tween.shift.scale,
+                backgroundColor: this.color},
                 ease: Power3.easeIn
             });
 
-            TweenMax.to(this.text, tween.duration, {
-                autoAlpha: 1,
+            TweenMax.to(this.text, tween.duration, {css:{
+                autoAlpha: 1},
                 ease: Expo.easeIn
             });
 
@@ -382,14 +395,12 @@
             obj.progress += tween.rate;
             obj.offset += tween.step.offset;
             obj.delta += tween.step.delta;
-            obj.scale += tween.step.scale;
             obj.pos.x = tween.center.x + obj.offset * Math.cos(obj.delta.toRad());
             obj.pos.y = tween.center.y - obj.offset * Math.sin(obj.delta.toRad());
 
-            TweenMax.to(obj.dom, tween.rate, {
+            TweenMax.to(obj.dom, tween.rate, {css:{
                 left: obj.pos.x,
-                top: obj.pos.y,
-                scale: obj.scale,
+                top: obj.pos.y},
                 ease: Power0.easeNone,
                 onComplete: stepSkillset,
                 onCompleteParams: [obj]
@@ -406,7 +417,6 @@
 
             $(this.dom).css('left', 'calc(50% + ' + offset.x + 'px)');
             $(this.dom).css('top', 'calc(50% - ' + offset.y + 'px)');
-            $(this.dom).css('transform', offset.s);
         }
     }
 

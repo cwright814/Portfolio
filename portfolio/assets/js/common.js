@@ -45,8 +45,3 @@ if (typeof(String.prototype.toRGB) === "undefined") {
         return {r: +rgb[0], g: +rgb[1], b: +rgb[2]};
     }
 }
-
-// On-load logic
-$(document).ready(function () {
-    
-});
