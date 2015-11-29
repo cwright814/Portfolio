@@ -1,8 +1,8 @@
 #header {
+    overflow-y: hidden;
+    
     width: 100%;
     height: 300px;
-
-    overflow-y: hidden;
 }
 
 #glow {

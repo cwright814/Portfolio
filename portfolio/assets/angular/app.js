@@ -202,16 +202,21 @@
         var timeout = $timeout;
         var interval = $interval;
         var ctrl = this;
-        //var debug = true;
+        var debug = true;
 
         var skillsets = {
             dom: {
+                section: $('#skills'),
+                slantLeft: $('#slantLeft'),
+                slantRight: $('#slantRight'),
+                tip: $('#skillsTip'),
                 parent: $('#mySkills'),
                 wrapper: $('#skillsets'),
                 children: $('#skillsets').children()
             },
             objects: [],
             timeline: new TimelineMax({paused: true}),
+            state: null,
             radius: $('#mySkills').width() / 2,
             init: initSkillsets,
             build: buildSkillsets,
@@ -221,10 +226,6 @@
 
         // Config for skillsets tween
         var tween = {
-            center: {
-                x: null,
-                y: null
-            },
             step: {
                 offset: null,
                 delta: null
@@ -284,28 +285,15 @@
                     reverse: false
                 })
                 .setTween(
-                    TweenMax.from($('#skillsTip'), 1.5, {css:{
+                    TweenMax.from(skillsets.dom.tip, 1.5, {css:{
                         x: -40,
                         autoAlpha: 0},
                         ease: Sine.easeOut,
                         delay: 0.75
                 }))
                 .on("enter", function(e) {
-                    var tl = new TimelineMax()
-                        .set(skillsets.dom.parent, {css:{
-                            boxShadow: '0 0 0 ' + skillsets.dom.parent.css('background-color')
-                        }})
-                        .to(skillsets.dom.parent, tween.duration, {css:{
-                            boxShadow: '0 0 16px rgb(43, 44, 38)'},
-                            ease: Sine.easeIn
-                        });
-
                     skillsets.build();
-                    skillsets.play({
-                        ease: Power4.easeOut,
-                        onComplete: skillsets.complete,
-                        onCompleteParams: [skillsets]
-                    });
+                    skillsets.play({ease: Power4.easeOut});
                 })
                 .addIndicators({name: "c1. #skillsets"})
                 .addTo(smCtrl)
@@ -318,10 +306,10 @@
             // Late start of scene.c0 (will be instant when triggered after delay)
             setTimeout(function(){smScenes[0].enabled(true)}, 2000);
 
-        // jQuery onHover actions (to be converted to Angular)
+        // Skillsets onHover actions
         skillsets.dom.children.hover(function() {
             // Enter
-            if (skillsets.timeline.totalProgress() == 1)
+            if (skillsets.state == 'radial')
             {
                 TweenMax.to(this, 0.5, {css:{
                     scale: (1 + tween.shift.scale) * 1.25,
@@ -332,13 +320,59 @@
             }
         }, function() {
             // Leave
-            if (skillsets.timeline.totalProgress() == 1)
+            if (skillsets.state == 'radial')
             {
                 TweenMax.to(this, 0.5, {css:{
                     scale: 1 + tween.shift.scale,
                     boxShadow: 'inset 0 0 0px ' + $(this).css('background-color'),
                     zIndex: 0
                 }});
+            }
+        });
+
+        // Skillsets onClick actions
+        skillsets.dom.children.click(function() {
+            if (skillsets.state == 'radial')
+            {
+                skillsets.state = null;
+
+                TweenMax.set(this, {css:{zIndex: 2}});
+                TweenMax.to(this, 1.3125, {css:{
+                    top: 'calc(0% + 0px)',
+                    left: 'calc(5% + 40px)',
+                    scale: 1.5,
+                    boxShadow: 'inset 0 0 0px ' + $(this).css('background-color')},
+                    ease: Power1.easeOut
+                });
+                TweenMax.to(skillsets.dom.section, 1.5, {css:{
+                    backgroundColor: $(this).css('background-color')
+                }});
+                TweenMax.to(skillsets.dom.tip, 0.5625, {css:{
+                    x: -40,
+                    autoAlpha: 0},
+                    ease: Sine.easeIn,
+                });
+                TweenMax.to(skillsets.dom.children.not(this), 0.375, {css:{
+                    left: 'calc(50% + -86px)',
+                    top: 'calc(50% - 86px)',
+                    scale: 0.25,
+                    autoAlpha: 0},
+                    ease: Circ.easeIn
+                });
+                TweenMax.to(skillsets.dom.parent, 0.75, {css:{
+                    scale: 0.5,
+                    autoAlpha: 0},
+                    ease: Expo.easeIn
+                });
+                TweenMax.to(skillsets.dom.slantLeft, 1.5, {css:{
+                    width: '0%'},
+                    ease: Power1.easeInOut
+                });
+                TweenMax.to(skillsets.dom.slantRight, 1.5, {css:{
+                    left: '10%',
+                    width: 'calc(90% + 172px)'},
+                    ease: Power1.easeInOut
+                });
             }
         });
 
@@ -354,6 +388,10 @@
                 return console.log('initSkillsets() cannot be called directly.');
             else
                 var that = this;
+
+            // If skillset objects already exist, wipe them out
+            if (this.objects.length)
+                this.objects.length = 0;
 
             that.dom.children.each(function(i) {
                 that.objects.push({
@@ -382,14 +420,17 @@
             else
                 var that = this;
 
-            tween.center.x = that.dom.wrapper.innerWidth()*0.5 - that.radius;
-            tween.center.y = that.dom.wrapper.innerHeight()*0.5 - that.radius;
+            // If a Timeline already exists, wipe it out
+            if (that.timeline.getChildren().length)
+                that.timeline.clear();
 
             // Perform pre-init
             $.each(that.objects, function(i, object) {
                 object.deltaEnd = (object.delta + tween.shift.delta).toRad();
-                TweenMax.set(object.dom, {css:{scale: object.scale}});
-                TweenMax.set(object.text, {css:{autoAlpha: 0}});
+                that.timeline.set(object.dom, {css:{
+                    boxShadow: 'transparent',
+                    zIndex: 0
+                }});
             });
 
             // Build Timeline for radial tween
@@ -398,34 +439,44 @@
                 $.each(that.objects, function(i, object) {
                     object.offset += tween.step.offset;
                     object.delta += tween.step.delta;
-                    object.pos.x = tween.center.x + object.offset * Math.cos(object.delta.toRad());
-                    object.pos.y = tween.center.y - object.offset * Math.sin(object.delta.toRad());
+                    object.pos.x = object.offset * Math.cos(object.delta.toRad()) - that.radius;
+                    object.pos.y = object.offset * Math.sin(object.delta.toRad()) + that.radius;
 
                     that.timeline.to(object.dom, tween.rate, {css:{
-                        left: object.pos.x,
-                        top: object.pos.y},
+                        left: 'calc(50% + ' + object.pos.x + 'px)',
+                        top: 'calc(50% - ' + object.pos.y + 'px)'},
                         ease: Power0.easeNone
                     }, '-=' + tween.rate * (i == 0 ? '0' : '1'));
                 });
             }
 
             // Perform post-init
+            that.timeline.fromTo(that.dom.parent, tween.duration,
+                {css:{boxShadow: '0 0 0 ' + that.dom.parent.css('background-color')}},
+                {css:{boxShadow: '0 0 16px rgb(43, 44, 38)'},
+                ease: Sine.easeIn
+            }, '-=' + tween.duration);
+
             $.each(that.objects, function(i, object) {
                 that.timeline
-                    .to(object.dom, tween.duration, {css:{
-                        scale: object.scale + tween.shift.scale,
-                        backgroundColor: object.color},
+                    .fromTo(object.dom, tween.duration,
+                        {css:{
+                            scale: object.scale,
+                            backgroundColor: that.dom.parent.css('background-color')}},
+                        {css:{
+                            scale: object.scale + tween.shift.scale,
+                            backgroundColor: object.color},
                         ease: Power3.easeIn
                     }, '-=' + tween.duration)
 
-                    .to(object.text, tween.duration, {css:{
-                        autoAlpha: 1},
+                    .from(object.text, tween.duration, {css:{
+                        autoAlpha: 0},
                         ease: Expo.easeIn
                     }, '-=' + tween.duration);
             });
         }
 
-        // Convenience function for encapsulation
+        // Convenience function for encapsulation (remembers passed params)
         function playSkillsets(params) {
             if (typeof this !== 'object')
                 return console.log('playSkillsets() cannot be called directly.');
@@ -433,11 +484,18 @@
                 return console.log('.init() and .build() must be called before .play().');
             else if (!this.timeline.getChildren().length)
                 return console.log('.build() must be called before .play().');
-            else
+            else if (angular.isObject(params) || !angular.isObject(this.timeline.params))
+            {
+                params.onComplete = this.complete;
+                params.onCompleteParams = [this];
+                this.timeline.params = params;
                 return this.timeline.restart().tweenTo(tween.duration, params);
+            }
+            else
+                return this.timeline.restart().tweenTo(tween.duration, this.timeline.params);
         }
 
-        // Revert to calc to ensure that changes to the window are updated properly
+        // onComplete logic for the radial
         function completeSkillsets(that) {
             if (typeof this !== 'object')
                 return console.log('completeSkillsets() cannot be called directly.');
@@ -457,14 +515,20 @@
                     var that = this;
             }
 
+            // Assigning a state here for interactions
+            that.state = 'radial';
+
+            // Set the final left/top to remove decimals
             $.each(that.objects, function(i, object) {
                 var offset = {
                     x: Math.round(tween.shift.offset * Math.cos(this.deltaEnd) - that.radius),
                     y: Math.round(tween.shift.offset * Math.sin(this.deltaEnd) + that.radius)
                 };
 
-                $(this.dom).css('left', 'calc(50% + ' + offset.x + 'px)');
-                $(this.dom).css('top', 'calc(50% - ' + offset.y + 'px)');
+                TweenMax.set(this.dom, {css:{
+                    left: 'calc(50% + ' + offset.x + 'px)',
+                    top: 'calc(50% - ' + offset.y + 'px)'
+                }});
             });
         }
     }

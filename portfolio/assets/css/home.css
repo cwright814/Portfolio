@@ -1,6 +1,7 @@
 #content {
     width: 100%;
     height: 2400px; /* For debugging */
+
     background-color: #444440; /* For debugging */
 }
 
@@ -11,13 +12,41 @@
 }
 
 #skills {
+    overflow: hidden;
+
     height: 600px;
     padding-top: 20px;
+
     background-color: rgb(43, 44, 38); /* For debugging */
 }
 
 #skills div:not(.inner) {
     position: absolute;
+}
+
+#shifter, #skillsets {
+    width: inherit;
+    height: inherit;
+}
+
+.slant {
+    width: 30%;
+    height: inherit;
+    margin-top: -20px;
+
+    background-color: rgb(36, 37, 32);
+}
+
+#slantLeft {
+    -ms-transform: skew(-20deg) translateX(-172px);
+    transform: skew(-20deg) translateX(-172px);
+}
+
+#slantRight {
+    left: 70%;
+
+    -ms-transform: skew(-20deg) translate(172px);
+    transform: skew(-20deg) translate(172px);
 }
 
 #skillsTip {
@@ -55,11 +84,6 @@
     font-size: 1.75em;
 }
 
-#skillsets, #shifter {
-    width: inherit;
-    height: inherit;
-}
-
 #skillsets {
     opacity: 0;
 }
@@ -80,7 +104,3 @@
 
     cursor: pointer;
 }
-
-/*#skillsets > div:hover {
-    box-shadow: inset 0 0 16px rgb(222, 218, 208);
-}*/
