@@ -373,6 +373,8 @@
                     width: 'calc(90% + 172px)'},
                     ease: Power1.easeInOut
                 });
+                // Fixes font rendering with Webkit
+                TweenMax.set(this, {css:{zIndex: 0}, delay: 1.5});
             }
         });
 
