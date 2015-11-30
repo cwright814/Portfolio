@@ -105,6 +105,22 @@
     cursor: pointer;
 }
 
+#skillsBack {
+    visibility: hidden;
+
+    bottom: 10%;
+    padding: 5px calc(2% + 12px);
+    z-index: 1;
+    
+    background-color: rgb(43, 44, 38);
+    border-radius: 0 19px 19px 0;
+    
+    color: rgb(222, 218, 208);
+    font-size: 1.4em;
+
+    cursor: pointer;
+}
+
 #skillsetDetails {
     visibility: hidden;
 
@@ -114,16 +130,24 @@
     font-size: 2em;
 }
 
+#skillsetDetails, #skillsetDetails ul ul {
+    color: rgb(222, 218, 208);
+}
+
+#skillsetDetails > div {
+    visibility: hidden;
+}
+
 #skillsetDetails div > ul > li {
     padding-bottom: 20px;
 }
 
-#skillsetDetails ul ul {
-    color: rgb(247, 247, 241);
-}
-
 #skillsetDetails .col-left {
     left: calc(35% + 40px);
+}
+
+#skillsetDetails .col-center {
+    left: calc(40% + 20px);
 }
 
 #skillsetDetails .col-right {

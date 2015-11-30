@@ -212,7 +212,8 @@
                 tip: $('#skillsTip'),
                 parent: $('#mySkills'),
                 wrapper: $('#skillsets'),
-                children: $('#skillsets').children()
+                children: $('#skillsets').children(),
+                back: $('#skillsBack')
             },
             objects: [],
             timeline: new TimelineMax({paused: true}),
@@ -304,7 +305,7 @@
             smScenes[0].enabled(true);
         else
             // Late start of scene.c0 (will be instant when triggered after delay)
-            setTimeout(function(){smScenes[0].enabled(true)}, 2000);
+            setTimeout(function(){smScenes[0].enabled(true);}, 2000);
 
         // Skillsets onHover actions
         skillsets.dom.children.hover(function() {
@@ -330,6 +331,30 @@
             }
         });
 
+        // Skillset Back onHover actions
+        skillsets.dom.back.hover(function() {
+            // Enter
+            if (skillsets.state == 'details')
+            {
+                TweenMax.to(this, 0.5, {css:{
+                    x: 0,
+                    backgroundColor: 'rgb(68, 68, 64)',
+                    color: 'rgb(247, 247, 241)'},
+                    ease: Expo.easeOut
+                });
+            }
+        }, function() {
+            // Leave
+            if (skillsets.state == 'details')
+            {
+                TweenMax.to(this, 0.5, {css:{
+                    x: -5,
+                    backgroundColor: 'rgb(43, 44, 38)',
+                    color: 'rgb(222, 218, 208)'
+                }});
+            }
+        });
+
         // Skillsets onClick actions
         skillsets.dom.children.click(function() {
             if (skillsets.state == 'radial')
@@ -339,6 +364,7 @@
 
                 // Primary transition
                 TweenMax.set(this, {css:{zIndex: 2}});
+
                 TweenMax.to(this, 1.3125, {css:{
                     top: 'calc(0% + 0px)',
                     left: 'calc(5% + 40px)',
@@ -346,14 +372,17 @@
                     boxShadow: 'inset 0 0 0px ' + skillsetColor},
                     ease: Power1.easeOut
                 });
+
                 TweenMax.to(skillsets.dom.section, 1.5, {css:{
                     backgroundColor: skillsetColor
                 }});
+
                 TweenMax.to(skillsets.dom.tip, 0.5625, {css:{
                     x: -40,
                     autoAlpha: 0},
                     ease: Sine.easeIn,
                 });
+
                 TweenMax.to(skillsets.dom.children.not(this), 0.375, {css:{
                     left: 'calc(50% + -86px)',
                     top: 'calc(50% - 86px)',
@@ -361,15 +390,18 @@
                     autoAlpha: 0},
                     ease: Circ.easeIn
                 });
+
                 TweenMax.to(skillsets.dom.parent, 0.75, {css:{
                     scale: 0.5,
                     autoAlpha: 0},
                     ease: Expo.easeIn
                 });
+
                 TweenMax.to(skillsets.dom.slantLeft, 1.5, {css:{
                     width: '0%'},
                     ease: Power1.easeInOut
                 });
+
                 TweenMax.to(skillsets.dom.slantRight, 1.5, {css:{
                     left: '10%',
                     width: 'calc(90% + 172px)'},
@@ -378,7 +410,7 @@
                 // Fixes font rendering with Webkit
                 TweenMax.set(this, {css:{zIndex: 0}, delay: 1.5});
 
-                // Staggered tween for skillset details
+                // Transition for skillset details
                 var subsection = $('div[data-skillset=' + $(this).attr('id') + ']');
                 var items = subsection.find('div > ul > li');
 
@@ -388,15 +420,31 @@
                     ease: Power3.easeOut,
                     delay: 1
                 }, 0.06);
+
                 TweenMax.to(items, 1, {css:{
                     color: skillsetColor},
                     ease: Expo.easeIn,
                     delay: 1
                 });
-                TweenMax.set($('#skillsetDetails'), {css:{
+
+                TweenMax.set(skillsets.dom.back, {css:{
+                    visibility: 'inherit'},
+                    delay: 1.75
+                });
+
+                TweenMax.fromTo(skillsets.dom.back, 1,
+                    {css:{x: -window.innerWidth/5}},
+                    {css:{x: -5},
+                    ease: Power4.easeOut,
+                    delay: 1.75
+                });
+
+                TweenMax.set($('#skillsetDetails').add(subsection), {css:{
                     visibility: 'inherit'},
                     delay: 1
                 });
+
+                setTimeout(function(){skillsets.state = 'details';}, 2000);
             }
         });
 
