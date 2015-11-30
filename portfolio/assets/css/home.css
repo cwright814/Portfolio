@@ -24,7 +24,7 @@
     position: absolute;
 }
 
-#shifter, #skillsets {
+#shifter, #skillsets, #skillsetDetails, #skillsetDetails > div {
     width: inherit;
     height: inherit;
 }
@@ -103,4 +103,29 @@
     text-shadow: 1px 1px 2px rgba(10, 10, 9, 0.3);
 
     cursor: pointer;
+}
+
+#skillsetDetails {
+    visibility: hidden;
+
+    top: 15%;
+    z-index: 0;
+    
+    font-size: 2em;
+}
+
+#skillsetDetails div > ul > li {
+    padding-bottom: 20px;
+}
+
+#skillsetDetails ul ul {
+    color: rgb(247, 247, 241);
+}
+
+#skillsetDetails .col-left {
+    left: calc(35% + 40px);
+}
+
+#skillsetDetails .col-right {
+    left: calc(60% + 40px);
 }

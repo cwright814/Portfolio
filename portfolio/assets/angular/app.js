@@ -50,7 +50,7 @@
 
     function ctrlHeader() {
         var ctrl = this;
-        //var debug = true;
+        var debug = true;
 
         var domParticles = $('#particles');
         var domParticle = $('#particle');
@@ -335,17 +335,19 @@
             if (skillsets.state == 'radial')
             {
                 skillsets.state = null;
+                var skillsetColor = $(this).css('background-color');
 
+                // Primary transition
                 TweenMax.set(this, {css:{zIndex: 2}});
                 TweenMax.to(this, 1.3125, {css:{
                     top: 'calc(0% + 0px)',
                     left: 'calc(5% + 40px)',
                     scale: 1.5,
-                    boxShadow: 'inset 0 0 0px ' + $(this).css('background-color')},
+                    boxShadow: 'inset 0 0 0px ' + skillsetColor},
                     ease: Power1.easeOut
                 });
                 TweenMax.to(skillsets.dom.section, 1.5, {css:{
-                    backgroundColor: $(this).css('background-color')
+                    backgroundColor: skillsetColor
                 }});
                 TweenMax.to(skillsets.dom.tip, 0.5625, {css:{
                     x: -40,
@@ -375,6 +377,26 @@
                 });
                 // Fixes font rendering with Webkit
                 TweenMax.set(this, {css:{zIndex: 0}, delay: 1.5});
+
+                // Staggered tween for skillset details
+                var subsection = $('div[data-skillset=' + $(this).attr('id') + ']');
+                var items = subsection.find('div > ul > li');
+
+                TweenMax.staggerFrom(items, 0.75, {css:{
+                    x: window.innerWidth/4,
+                    opacity: 0},
+                    ease: Power3.easeOut,
+                    delay: 1
+                }, 0.06);
+                TweenMax.to(items, 1, {css:{
+                    color: skillsetColor},
+                    ease: Expo.easeIn,
+                    delay: 1
+                });
+                TweenMax.set($('#skillsetDetails'), {css:{
+                    visibility: 'inherit'},
+                    delay: 1
+                });
             }
         });
 
