@@ -24,7 +24,10 @@
     position: absolute;
 }
 
-#shifter, #skillsets, #skillsetDetails, #skillsetDetails > div {
+#shifter,
+#skillsets,
+#skillsetDetails,
+#skillsetDetails > div {
     width: inherit;
     height: inherit;
 }
@@ -101,8 +104,6 @@
     font-size: 1.6em;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(10, 10, 9, 0.3);
-
-    cursor: pointer;
 }
 
 #skillsBack {
@@ -117,8 +118,6 @@
     
     color: rgb(222, 218, 208);
     font-size: 1.4em;
-
-    cursor: pointer;
 }
 
 #skillsetDetails {
@@ -130,7 +129,8 @@
     font-size: 2em;
 }
 
-#skillsetDetails, #skillsetDetails ul ul {
+#skillsetDetails,
+#skillsetDetails ul ul {
     color: rgb(222, 218, 208);
 }
 
@@ -143,13 +143,18 @@
 }
 
 #skillsetDetails .col-left {
-    left: calc(35% + 40px);
+    left: calc(35% + 20px);
 }
 
 #skillsetDetails .col-center {
-    left: calc(40% + 20px);
+    left: 40%;
 }
 
 #skillsetDetails .col-right {
-    left: calc(60% + 40px);
+    left: calc(60% + 20px);
+}
+
+#gsap { /* Because these guys are awesome */
+    color: rgb(122, 208, 36);
+    font-weight: bolder;
 }
