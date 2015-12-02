@@ -1,8 +1,5 @@
 #content {
     width: 100%;
-    height: 2400px; /* For debugging */
-
-    background-color: #444440; /* For debugging */
 }
 
 #content > section {
@@ -17,7 +14,7 @@
     height: 600px;
     padding-top: 20px;
 
-    background-color: rgb(43, 44, 38); /* For debugging */
+    background-color: rgb(43, 44, 38);
 }
 
 #skills div:not(.inner) {
@@ -157,4 +154,75 @@
 #gsap { /* Because these guys are awesome */
     color: rgb(122, 208, 36);
     font-weight: bolder;
+}
+
+#projects {
+}
+
+#projectsHeader {
+    margin-bottom: 20px;
+    padding-top: 50px;
+    padding-bottom: 20px;
+
+    background-color: rgb(29, 29, 26);
+
+    color: rgb(222, 218, 208);
+    font-size: calc(1.5vw + 20px);
+    text-align: center;
+}
+
+.project {
+    height: calc(15vw + 120px);
+    padding: 1% 3%;
+
+    background-color: rgb(43, 44, 38);
+    background-clip: content-box;
+}
+
+.project > div {
+    height: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.project > div > a {
+    padding-left: 10px;
+}
+
+.project p {
+    margin-top: 1vw;
+
+    color: rgb(222, 218, 208);
+}
+
+.project > .img {
+    border-right: 20px solid rgb(36, 37, 32);
+}
+
+.projectInfo {
+    font-size: calc(1.2vw + 5px);
+}
+
+#trashhouse .img {
+    background-image: url("/assets/img/trashhouse.png");
+}
+
+#trashhouse .large, #trashhouse .accent {
+    color: rgb(158, 126, 215);
+}
+
+#theforge .img {
+    background-image: url("/assets/img/theforge.png");
+}
+
+#theforge .large, #theforge .accent {
+    color: rgb(122, 208, 36);
+}
+
+#portfolio .img {
+    background-image: url("/assets/img/portfolio.png");
+}
+
+#portfolio .large, #portfolio .accent {
+    color: rgb(229, 187, 72);
 }

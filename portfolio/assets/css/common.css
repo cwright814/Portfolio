@@ -10,16 +10,36 @@ body {
     color: rgb(222, 218, 208);
 }
 
-.small {
+p {
+    text-indent: 2em;
+}
+
+.xsmall {
     font-size: 50%;
+}
+
+.small {
+    font-size: 75%;
 }
 
 .large {
     font-size: 150%;
 }
 
+.xlarge {
+    font-size: 200%;
+}
+
 .click {
     cursor: pointer;
+}
+
+.img {
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-clip: content-box;
+    background-origin: content-box;
 }
 
 div.outer {
@@ -32,7 +52,7 @@ div.outer > div.inner {
 }
 
 #content {
-    background-color: rgb(43, 44, 38);
+    background-color: rgb(36, 37, 32);
 
     color: rgb(247, 247, 241);
 }
