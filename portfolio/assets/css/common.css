@@ -3,7 +3,10 @@
 }
 
 body {
+    min-width: 927px;
+
     background-color: rgb(29, 29, 26);
+
     color: rgb(222, 218, 208);
 }
 
@@ -30,5 +33,6 @@ div.outer > div.inner {
 
 #content {
     background-color: rgb(43, 44, 38);
+
     color: rgb(247, 247, 241);
 }

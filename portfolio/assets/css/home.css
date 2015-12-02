@@ -143,7 +143,7 @@
 }
 
 #skillsetDetails .col-left {
-    left: calc(35% + 20px);
+    left: calc(35% + 15px);
 }
 
 #skillsetDetails .col-center {
@@ -151,7 +151,7 @@
 }
 
 #skillsetDetails .col-right {
-    left: calc(60% + 20px);
+    left: calc(60% + 30px);
 }
 
 #gsap { /* Because these guys are awesome */

@@ -52,6 +52,8 @@
         var ctrl = this;
         var debug = true;
 
+    /*  CONFIGURATION START */
+
         var domParticles = $('#particles');
         var domParticle = $('#particle');
         var particles = [];
@@ -102,60 +104,67 @@
                 .addTo(smCtrl)
         ];
 
-        // Create particles
-        for (var i = 1; i <= 64; i++) {
-            var temp = {
-                dom: domParticle.clone(),
-                x: Math.random(),
-                y: Math.random(),
-                z: null,
-                r: null // Radius
-            };
-            var o; // Opacity
+    /*  CONFIGURATION END */
 
-            if (i <= 38) {
-                temp.z = 1;
-                temp.r = 8;
-                o      = 0.2;
+        // Delay particle creation until document is ready
+        $(document).ready(function() {
+            // Create particles
+            for (var i = 1; i <= 64; i++) {
+                var temp = {
+                    dom: domParticle.clone(),
+                    x: Math.random(),
+                    y: Math.random(),
+                    z: null,
+                    r: null // Radius
+                };
+                var o; // Opacity
+
+                if (i <= 38) {
+                    temp.z = 1;
+                    temp.r = 8;
+                    o      = 0.2;
+                }
+                else if (i > 38 && i <= 54) {
+                    temp.z = 2;
+                    temp.r = 24;
+                    o      = 0.4;
+                }
+                else if (i > 54 && i <= 62) {
+                    temp.z = 3;
+                    temp.r = 64;
+                    o      = 0.65;
+                }
+                else {
+                    temp.z = 5; // Skips 4 for exaggerated movement
+                    temp.r = 160;
+                    o      = 1;
+                }
+
+                temp.dom.css('z-index', temp.z);
+                temp.dom.css('opacity', o);
+                temp.dom.css('width', temp.r*2);
+                temp.dom.css('height', temp.r*2);
+                temp.dom.css('left', -temp.r);
+                temp.dom.css('top', -temp.r);
+                temp.dom.css('background', 'radial-gradient(' +
+                         'circle ' + temp.r + 'px,' +
+                         'rgba(56, 76, 102, 0.75) 0%,' +
+                         'rgba(56, 76, 102, 0) 100%)'
+                );
+
+                domParticles.append(temp.dom);
+                particles.push(temp);
             }
-            else if (i > 38 && i <= 54) {
-                temp.z = 2;
-                temp.r = 24;
-                o      = 0.4;
-            }
-            else if (i > 54 && i <= 62) {
-                temp.z = 3;
-                temp.r = 64;
-                o      = 0.65;
-            }
-            else {
-                temp.z = 5; // Skips 4 for exaggerated movement
-                temp.r = 160;
-                o      = 1;
-            }
 
-            temp.dom.css('z-index', temp.z);
-            temp.dom.css('opacity', o);
-            temp.dom.css('width', temp.r*2);
-            temp.dom.css('height', temp.r*2);
-            temp.dom.css('left', -temp.r);
-            temp.dom.css('top', -temp.r);
-            temp.dom.css('background', 'radial-gradient(' +
-                     'circle ' + temp.r + 'px,' +
-                     'rgba(56, 76, 102, 0.75) 0%,' +
-                     'rgba(56, 76, 102, 0) 100%)'
-            );
+            domParticle.remove(); // Remove template particle
+            playParticles(); // Start particles animation on page load
+        });
 
-            domParticles.append(temp.dom);
-            particles.push(temp);
-        }
-
-        domParticle.remove(); // Remove template particle
-        playParticles(); // Start particles animation on page load
-
-        // Begin particles animation (disabled during debug)
+        // Begin particles animation (disabled during debug and on mobile)
         function playParticles() {
             if (typeof debug !== 'undefined' && debug)
+                return;
+            else if (/Mobi/.test(navigator.userAgent))
                 return;
 
             $.each(particles, function(i, particle) {
@@ -304,6 +313,9 @@
                 .addTo(smCtrl)
                 .enabled(false)
         ];
+
+        // Increase the lag smoothing sensitivity (primarily for mobile)
+        TweenMax.lagSmoothing(300, 100);
 
     /*  CONFIGURATION END */
 
