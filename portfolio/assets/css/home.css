@@ -204,7 +204,7 @@
 }
 
 #trashhouse .img {
-    background-image: url("/assets/img/trashhouse.png");
+    background-image: url("../img/trashhouse.jpg");
 }
 
 #trashhouse .large, #trashhouse .accent {
@@ -212,7 +212,7 @@
 }
 
 #theforge .img {
-    background-image: url("/assets/img/theforge.png");
+    background-image: url("../img/theforge.png");
 }
 
 #theforge .large, #theforge .accent {
@@ -220,7 +220,7 @@
 }
 
 #portfolio .img {
-    background-image: url("/assets/img/portfolio.png");
+    background-image: url("../img/portfolio.jpg");
 }
 
 #portfolio .large, #portfolio .accent {
