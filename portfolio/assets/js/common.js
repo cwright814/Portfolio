@@ -1,3 +1,9 @@
+/** Forces scroll position to top of page */
+/*  Prevents loading to a blank section until ScrollMagic kicks in */
+$(window).on('beforeunload', function() {
+    $(window).scrollTop(0);
+});
+
 /** Returns width of scrollbar if present */
 function getScrollbarWidth() {
     var outer = document.createElement("div");

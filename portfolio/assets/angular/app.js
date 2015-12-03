@@ -50,7 +50,7 @@
 
     function ctrlHeader() {
         var ctrl = this;
-        var debug = true;
+        //var debug = true;
 
     /*  CONFIGURATION START */
 
@@ -84,7 +84,7 @@
                         ease: Circ.easeOut
                     }, "-=1.5")
                 )
-                .addIndicators({name: "h0. base"})
+                // .addIndicators({name: "h0. base"})
                 .addTo(smCtrl),
             // Particles pause/resume (for efficiency when off-screen)
             new ScrollMagic
@@ -100,7 +100,7 @@
                 .on("leave", function(e) {
                     TweenMax.killTweensOf($(domParticles).children());
                 })
-                .addIndicators({name: "h1. pause"})
+                // .addIndicators({name: "h1. pause"})
                 .addTo(smCtrl)
         ];
 
@@ -211,7 +211,7 @@
         var timeout = $timeout;
         var interval = $interval;
         var ctrl = this;
-        var debug = true;
+        //var debug = true;
 
     /*  CONFIGURATION START */
 
@@ -283,7 +283,7 @@
                         onCompleteParams: [true]
                     });
                 })
-                .addIndicators({name: "c0. #mySkills"})
+                // .addIndicators({name: "c0. #mySkills"})
                 .addTo(smCtrl)
                 .enabled(false),
             // Skillsets radial tweens
@@ -305,13 +305,59 @@
                     skillsets.build();
                     skillsets.play({ease: Power2.easeOut});
 
-                    // Disabling the skillsets scenes as they're no longer needed
+                    // Disabling the skillsets scenes to avoid conflicts
                     smScenes[0].enabled(false);
                     smScenes[1].enabled(false);
                 })
-                .addIndicators({name: "c1. #skillsets"})
+                // .addIndicators({name: "c1. #skillsets"})
                 .addTo(smCtrl)
-                .enabled(false)
+                .enabled(false),
+            // Projects intro tween
+            new ScrollMagic
+                .Scene({
+                    triggerElement: '#projects',
+                    offset: -160,
+                    reverse: false
+                })
+                .setTween(
+                    new TimelineMax()
+                    .from($('#projectsHeader > div'), 1, {css:{
+                        y: -16,
+                        autoAlpha: 0},
+                        ease: Expo.easeOut
+                    })
+                    .staggerFrom($('.project'), 0.5, {css:{
+                        y: 128,
+                        autoAlpha: 0},
+                        ease: Power4.easeOut
+                    }, 0.15, '-=0.6')
+                )
+                // .addIndicators({name: "c2. #projects"})
+                .addTo(smCtrl)
+                .enabled(false),
+            // Contact intro tween
+            new ScrollMagic
+                .Scene({
+                    triggerElement: '#contact',
+                    triggerHook: 'onEnter',
+                    offset: 200,
+                    reverse: false
+                })
+                .setTween(
+                    new TimelineMax()
+                    .from($('#contactHeader > div'), 1, {css:{
+                        y: -16,
+                        autoAlpha: 0},
+                        ease: Expo.easeOut
+                    })
+                    .staggerFrom($('#contactContent > div > div'), 0.75, {cycle:{
+                        x: [-128, 128]},
+                        autoAlpha: 0,
+                        ease: Power4.easeOut
+                    }, 0, '-=0.6')
+                )
+                // .addIndicators({name: "c3. #contact"})
+                .addTo(smCtrl)
         ];
 
         // Increase the lag smoothing sensitivity (primarily for mobile)
@@ -690,6 +736,9 @@
             // Assigning a state here for interactions
             that.state = 'radial';
 
+            // Enable the Projects scene
+            smScenes[2].enabled(true);
+
             // Per-object logic
             $.each(that.objects, function(i, object) {
                 var offset = {
@@ -732,5 +781,28 @@
 
     function ctrlFooter() {
         var ctrl = this;
+
+    /*  CONFIGURATION START */
+
+        // ScrollMagic scenes
+        var smScenes = [
+            new ScrollMagic
+                .Scene({
+                    triggerElement: '#footer',
+                    triggerHook: 'onEnter',
+                    offset: 50,
+                    reverse: false
+                })
+                .setTween(
+                    TweenMax.from($('#footer'), 1.5, {css:{
+                        autoAlpha: 0},
+                        ease: Power2.easeOut
+                }))
+                // .addIndicators({name: "f0. #footer"})
+                .addTo(smCtrl)
+        ];
+
+    /*  CONFIGURATION END */
+
     }
 })();

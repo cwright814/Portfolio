@@ -42,6 +42,10 @@ p {
     background-origin: content-box;
 }
 
+.dim {
+    opacity: 0.5;
+}
+
 div.outer {
     display: table;
 }

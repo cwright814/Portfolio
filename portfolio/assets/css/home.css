@@ -8,6 +8,28 @@
     width: inherit;
 }
 
+.header {
+    margin-bottom: 20px;
+    padding-top: 50px;
+    padding-bottom: 20px;
+
+    text-align: center;
+}
+
+@media (min-width: 945px) {
+    .header {
+        font-size: calc(1.5vw + 20px);
+    }
+}
+
+@media (max-width: 944px) {
+    .header {
+        font-size: 34.15px;
+    }
+}
+
+/*  My Skills */
+
 #skills {
     overflow: hidden;
 
@@ -156,11 +178,9 @@
     font-weight: bolder;
 }
 
-@media (min-width: 945px) {
-    #projectsHeader {
-        font-size: calc(1.5vw + 20px);
-    }
+/*  My Projects */
 
+@media (min-width: 945px) {
     #projectsContent {
         padding: 0 calc(30vw - 268px);
     }
@@ -179,10 +199,6 @@
 }
 
 @media (max-width: 944px) {
-    #projectsHeader {
-        font-size: 34.15px;
-    }
-    
     .project {
         height: 214.5px;
     }
@@ -197,14 +213,13 @@
 }
 
 #projectsHeader {
-    margin-bottom: 20px;
-    padding-top: 50px;
-    padding-bottom: 20px;
-
     background-color: rgb(29, 29, 26);
 
     color: rgb(222, 218, 208);
-    text-align: center;
+}
+
+#projectsContent {
+    padding-bottom: 20px;
 }
 
 .project {
@@ -246,7 +261,7 @@
 }
 
 #theforge .large, #theforge .accent {
-    color: rgb(122, 208, 36);
+    color: rgb(229, 187, 72);
 }
 
 #portfolio .img {
@@ -254,5 +269,54 @@
 }
 
 #portfolio .large, #portfolio .accent {
-    color: rgb(229, 187, 72);
+    color: rgb(135, 219, 47);
+}
+
+/*  Contact Me */
+
+@media (min-width: 945px) {
+    #contactContent {
+        padding: 0 calc(30vw - 268px);
+    }
+}
+
+#contact {
+    overflow-x: hidden;
+    
+    color: rgb(222, 218, 208);
+}
+
+#contactHeader {
+    background-color: rgb(29, 29, 26);
+}
+
+#contactContent {
+    padding-top: 10px;
+    padding-bottom: 30px;
+
+    font-size: 1.5em;
+}
+
+#contactContent ul {
+    padding-left: 40px; /* Ensures padding mirrors #social */
+}
+
+#contactContent ul li {
+    list-style-type: none;
+}
+
+#name {
+    color: rgb(135, 219, 47);
+    font-size: 1.5em;
+    line-height: 1.5em;
+}
+
+#phone {
+    letter-spacing: 0.06em;
+}
+
+#social {
+    padding-right: 40px;
+
+    text-align: right;
 }
