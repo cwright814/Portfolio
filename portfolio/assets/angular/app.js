@@ -786,6 +786,7 @@
 
         // ScrollMagic scenes
         var smScenes = [
+            // Copyright fade-in
             new ScrollMagic
                 .Scene({
                     triggerElement: '#footer',

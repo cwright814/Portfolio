@@ -319,6 +319,18 @@
     list-style-type: none;
 }
 
+#photo {
+    float: left;
+    width: 117px;
+    height: 117px;
+    margin-left: 40px;
+    margin-right: 15px;
+
+    background-image: url("../img/me.jpg");
+    background-size: contain;
+    border-radius: 50%;
+}
+
 #name {
     color: rgb(135, 219, 47);
     font-size: 1.5em;
