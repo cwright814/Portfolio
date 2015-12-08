@@ -357,6 +357,29 @@
                     }, 0, '-=0.6')
                 )
                 // .addIndicators({name: "c3. #contact"})
+                .addTo(smCtrl),
+            // #skills background slide
+            new ScrollMagic
+                .Scene({
+                    reverse: false
+                })
+                .setTween(
+                    new TimelineMax()
+                    .from(skillsets.dom.slantLeft, 1.25, {css:{
+                        x: 0,
+                        left: '-35%',
+                        width: '100%'},
+                        ease: Power2.easeOut,
+                        delay: 1.25
+                    })
+                    .from(skillsets.dom.slantRight, 1.25, {css:{
+                        x: 0,
+                        left: '35%',
+                        width: '100%'},
+                        ease: Power2.easeOut
+                    }, '-=1.25')
+                )
+                // .addIndicators({name: "c3. #contact"})
                 .addTo(smCtrl)
         ];
 
