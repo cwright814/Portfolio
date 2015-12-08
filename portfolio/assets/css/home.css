@@ -180,6 +180,24 @@
 
 /*  My Projects */
 
+@media (min-width: 992px) {
+    .projectInfo {
+        font-size: calc(0.65vw + 9px);
+    }
+}
+
+@media (max-width: 991px) {
+    .projectInfo {
+        line-height: 20px;
+    }
+}
+
+@media (min-width: 945px) and (max-width: 991px) {
+    .projectInfo {
+        font-size: calc(0.65vw + 13.5px);
+    }
+}
+
 @media (min-width: 945px) {
     #projectsContent {
         padding: 0 calc(30vw - 268px);
@@ -187,10 +205,6 @@
 
     .project {
         height: calc(10vw + 120px);
-    }
-
-    .projectInfo {
-        font-size: calc(0.65vw + 9px);
     }
 
     .project p {
@@ -204,7 +218,7 @@
     }
 
     .projectInfo {
-        font-size: 15.1333px;
+        font-size: 19.64px;
     }
 
     .project p {
@@ -316,7 +330,7 @@
 }
 
 #social {
-    padding-right: 40px;
+    padding-right: 55px;
 
     text-align: right;
 }
