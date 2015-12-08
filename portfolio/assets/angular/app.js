@@ -302,7 +302,6 @@
                         delay: 0.75
                 }))
                 .on("enter", function(e) {
-                    skillsets.build();
                     skillsets.play({ease: Power2.easeOut});
 
                     // Disabling the skillsets scenes to avoid conflicts
@@ -391,6 +390,7 @@
         // Delayed init for your browser's convenience
         $(document).ready(function() {
             skillsets.init();
+            skillsets.build();
         });
 
         if (typeof debug !== 'undefined' && debug)
