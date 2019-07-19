@@ -5,23 +5,23 @@
   "description": "The digital portfolio of Christopher Wright.",
   "license": "Apache2",
   "devDependencies": {
-    "bower": "1.6.3",
-    "eslint": "1.5.1",
-    "eslint-plugin-angular": "0.12.0",
-    "http-server": "^0.6.1",
-    "karma": "^0.12.23",
-    "karma-chrome-launcher": "^0.1.5",
-    "karma-cli": "0.0.4",
-    "karma-firefox-launcher": "^0.1.3",
-    "karma-jasmine": "^0.2.2",
-    "karma-phantomjs-launcher": "0.2.0",
-    "phantomjs": "1.9.17",
-    "protractor": "~1.0.0"
+    "bower": "^1.8.8",
+    "eslint": "^6.0.1",
+    "eslint-plugin-angular": "^4.0.1",
+    "http-server": "^0.11.1",
+    "karma": "^4.2.0",
+    "karma-chrome-launcher": "^3.0.0",
+    "karma-cli": "^2.0.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-jasmine": "^2.0.1",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "phantomjs": "^2.1.7",
+    "protractor": "^5.4.2"
   },
   "scripts": {
     "postinstall": "bower install --config.interactive=false",
     "prestart": "npm install",
-    "start": "php -S 0.0.0.0.:8000 -t portfolio",
+    "start": "php -S 0.0.0.0:8000 -t portfolio",
     "pretest": "npm install",
     "lint": "eslint -c ./.eslintrc ./portfolio"
   }
