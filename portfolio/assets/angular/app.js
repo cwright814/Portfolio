@@ -213,16 +213,6 @@
         var ctrl = this;
         //var debug = true;
 
-        // Detect browser (due to unforeseen regressions in CSS calc) (https://stackoverflow.com/a/9851769)
-        var browser = {};
-        browser.isIE = /*@cc_on!@*/false || !!document.documentMode;
-        browser.isEdge = !browser.isIE && !!window.StyleMedia;
-        browser.isFirefox = typeof InstallTrigger !== 'undefined';
-        browser.isChrome = !!window.chrome; // && (!!window.chrome.webstore || !!window.chrome.runtime);
-        browser.isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        browser.isBlink = !browser.isEdge && (browser.isChrome || browser.isOpera) && !!window.CSS;
-        browser.isOther = !browser.isIE && !browser.isFirefox && !browser.isBlink;
-
     /*  CONFIGURATION START */
 
         // Static object used for skillset tweens
@@ -261,8 +251,8 @@
                 delta: 180,
                 scale: -0.2
             },
-            steps: browser.isOther ? 1 : (browser.isFirefox ? 100 : 60),
-            duration: browser.isOther ? 0.0 : 1.0,
+            steps: 60,
+            duration: 1.0,
             rate: null
         };
 
@@ -616,7 +606,7 @@
                 TweenMax.to(skillsets.dom.parent, 0.5, {css:{
                     autoAlpha: 1,
                     scale: 1},
-                    delay: 1.5
+                    delay: 1.5,
                 });
 
                 /* Delayed call for the radial tween
@@ -691,19 +681,11 @@
                     object.pos.x = object.offset * Math.cos(object.delta.toRad()) - that.radius;
                     object.pos.y = object.offset * Math.sin(object.delta.toRad()) + that.radius;
 
-                    if (browser.isIE || browser.isBlink) {
-                        that.timeline.to(object.dom, tween.rate, {css:{
-                            left: 'calc(50% + ' + object.pos.x + 'px)',
-                            top: 'calc(50% - ' + object.pos.y + 'px)'},
-                            ease: Power0.easeNone
-                        }, '-=' + tween.rate * (i == 0 ? '0' : '1'));
-                    } else {
-                        that.timeline.to(object.dom, tween.rate, {css:{
-                            left: 'calc(50% + (' + object.pos.x + 'px))',
-                            top: 'calc(50% - (' + object.pos.y + 'px))'},
-                            ease: Power0.easeNone
-                        }, '-=' + tween.rate * (i == 0 ? '0' : '1'));
-                    }
+                    that.timeline.to(object.dom, tween.rate, {css:{
+                        left: 'calc(50% + ' + object.pos.x + 'px)',
+                        top: 'calc(50% - ' + object.pos.y + 'px)'},
+                        ease: Power0.easeNone
+                    }, '-=' + tween.rate * (i == 0 ? '0' : '1'));
                 });
             }
 
@@ -789,8 +771,8 @@
 
                 // Set the final left/top to remove decimals
                 TweenMax.set(this.dom, {css:{
-                    left: 'calc(50% + (' + offset.x + 'px))',
-                    top: 'calc(50% - (' + offset.y + 'px))'
+                    left: 'calc(50% + ' + offset.x + 'px)',
+                    top: 'calc(50% - ' + offset.y + 'px)'
                 }});
 
                 // Apply the hover state if the mouse is actively hovering
