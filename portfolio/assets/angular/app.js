@@ -57,7 +57,6 @@
         var domParticles = $('#particles');
         var domParticle = $('#particle');
         var particles = [];
-        var particleVars = [];
         var particlesHidden = true;
 
         // ScrollMagic scenes
@@ -234,6 +233,7 @@
             timeline: new TimelineMax({paused: true}),
             state: null,
             radius: $('#mySkills').width() / 2,
+            resizePending: false,
             init: initSkillsets,
             build: buildSkillsets,
             play: playSkillsets,
@@ -393,6 +393,19 @@
             skillsets.build();
         });
 
+        $(window).resize(function() {
+            // If not on the radial state, set resize to pending (as rebuilding now will cause glitches)
+            if (skillsets.state !== 'radial') {
+                skillsets.resizePending = true;
+                return;
+            }
+
+            // Do a full rebuild and force the radial's final state
+            skillsets.init();
+            skillsets.build();
+            skillsets.complete(skillsets);
+        });
+
         if (typeof debug !== 'undefined' && debug)
             // Immediate start of scene.c0 when debugging
             smScenes[0].enabled(true);
@@ -444,6 +457,8 @@
                 skillsets.state = null;
                 skillsets.dom.selected = $(this);
                 var skillsetColor = $(this).css('background-color');
+                var w = $(skillsets.dom.wrapper).width();
+                var h = $(skillsets.dom.wrapper).height();
 
                 // Remove .click to indicate no further action
                 skillsets.dom.children.removeClass('click');
@@ -452,8 +467,8 @@
                 TweenMax.set(this, {css:{zIndex: 2}});
 
                 TweenMax.to(this, 1.3125, {css:{
-                    top: 'calc(0% + 0px)',
-                    left: 'calc(5% + 40px)',
+                    left: (5 + 40 / w * 100) + '%',
+                    top: '0%',
                     scale: 1.5,
                     boxShadow: 'inset 0 0 0px ' + skillsetColor},
                     ease: Power1.easeOut
@@ -470,8 +485,8 @@
                 });
 
                 TweenMax.to(skillsets.dom.children.not(this), 0.375, {css:{
-                    left: 'calc(50% + -86px)',
-                    top: 'calc(50% - 86px)',
+                    left: (50 - 86 / w * 100) + '%',
+                    top: (50 - 86 / h * 100) + '%',
                     scale: 0.25,
                     autoAlpha: 0},
                     ease: Circ.easeIn
@@ -490,7 +505,7 @@
 
                 TweenMax.to(skillsets.dom.slantRight, 1.5, {css:{
                     left: '10%',
-                    width: 'calc(90% + 172px)'},
+                    width: (90 + 172 / w * 100) + '%'},
                     ease: Power1.easeInOut
                 });
                 // Fixes font rendering with Webkit
@@ -589,7 +604,7 @@
 
                 TweenMax.to(skillsets.dom.slantRight, 1.5, {css:{
                     left: '70%',
-                    width: 'calc(30% + 0px)'},
+                    width: '30%'},
                     ease: Power2.easeInOut
                 });
 
@@ -606,8 +621,19 @@
                 TweenMax.to(skillsets.dom.parent, 0.5, {css:{
                     autoAlpha: 1,
                     scale: 1},
-                    delay: 1.5,
+                    delay: 1.5
                 });
+
+                // Rebuild the radial tween if a resize is pending
+                if (skillsets.resizePending) {
+                    skillsets.resizePending = false;
+
+                    // Using a delayed call to avoid visual glitches as the selected skillset fades away
+                    setTimeout(function() {
+                        skillsets.init();
+                        skillsets.build();
+                    }, 500);
+                }
 
                 /* Delayed call for the radial tween
                  * I'm using setTimeout() to avoid a first-value Timeline bug
@@ -644,7 +670,7 @@
                     scale: 1.0,
                     color: $(this).attr('data-color'),
                     text: $(this).children('.inner:first-child'),
-                    progress: 0,
+                    progress: 0
                 });
             });
         }
@@ -674,16 +700,19 @@
             });
 
         /*  Build Timeline for radial tween */
+            var w = $(that.dom.wrapper).width();
+            var h = $(that.dom.wrapper).height();
+
             for (var step = 1; step <= tween.steps; step++) {
                 $.each(that.objects, function(i, object) {
                     object.offset += tween.step.offset;
                     object.delta += tween.step.delta;
-                    object.pos.x = object.offset * Math.cos(object.delta.toRad()) - that.radius;
-                    object.pos.y = object.offset * Math.sin(object.delta.toRad()) + that.radius;
+                    object.pos.x = (object.offset * Math.cos(object.delta.toRad()) - that.radius) / w * 100;
+                    object.pos.y = (object.offset * Math.sin(object.delta.toRad()) + that.radius) / h * 100;
 
                     that.timeline.to(object.dom, tween.rate, {css:{
-                        left: 'calc(50% + ' + object.pos.x + 'px)',
-                        top: 'calc(50% - ' + object.pos.y + 'px)'},
+                        left: (50 + object.pos.x) + '%',
+                        top: (50 - object.pos.y) + '%'},
                         ease: Power0.easeNone
                     }, '-=' + tween.rate * (i == 0 ? '0' : '1'));
                 });
@@ -756,6 +785,9 @@
                     var that = this;
             }
 
+            // Force timeline to the end (helps with window resizing)
+            that.timeline.progress(1, false);
+
             // Assigning a state here for interactions
             that.state = 'radial';
 
@@ -763,16 +795,19 @@
             smScenes[2].enabled(true);
 
             // Per-object logic
+            var w = $(that.dom.wrapper).width();
+            var h = $(that.dom.wrapper).height();
+
             $.each(that.objects, function(i, object) {
                 var offset = {
-                    x: Math.round(tween.shift.offset * Math.cos(this.deltaEnd) - that.radius),
-                    y: Math.round(tween.shift.offset * Math.sin(this.deltaEnd) + that.radius)
+                    x: Math.round(tween.shift.offset * Math.cos(this.deltaEnd) - that.radius) / w * 100,
+                    y: Math.round(tween.shift.offset * Math.sin(this.deltaEnd) + that.radius) / h * 100
                 };
 
                 // Set the final left/top to remove decimals
                 TweenMax.set(this.dom, {css:{
-                    left: 'calc(50% + ' + offset.x + 'px)',
-                    top: 'calc(50% - ' + offset.y + 'px)'
+                    left: (50 + offset.x) + '%',
+                    top: (50 - offset.y) + '%'
                 }});
 
                 // Apply the hover state if the mouse is actively hovering
