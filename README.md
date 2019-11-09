@@ -1,32 +1,39 @@
 # Portfolio
+
 The digital portfolio of Christopher Wright.
 
+## Project Setup
 
-####Install dependencies
+### Install dependencies
 
-- `sudo curl -sL https://deb.nodesource.com/setup | sudo bash -`
+```bash
+sudo curl -sL https://deb.nodesource.com/setup | sudo bash -
+sudo apt install nodejs
+sudo apt install php5-cli
+```
 
-- `sudo apt-get install nodejs`
+### Clone repository
 
-- `sudo apt-get install php5-cli`
+```bash
+git clone https://github.com/cwright814/Portfolio
+cd ./Portfolio
+```
 
-####Clone repository
+### Install needed UI library dependencies
 
-- `git clone https://github.com/cwright814/Portfolio`
+```bash
+npm install
+```
 
-- `cd Portfolio`
+### Start the server
 
-####Install needed UI library dependencies
+```bash
+npm start
+```
 
-- `npm install`
+The server will use `0.0.0.0:8000`.
 
-####Start the server
-
-- `npm start`
-
-The server will use 0.0.0.0:8000.
-
-####Related links
+## Related links
 
 Trello - Development tracker
 - https://trello.com/b/57T8Ugoe/portfolio
